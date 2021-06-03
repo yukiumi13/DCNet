@@ -10,6 +10,3 @@ S. Dong, Z. Gao, et al., Holistic and Deep Feature Pyramids for Saliency Detecti
 ```
 Pytorch == 1.4
 ```
-
-## Others:
-The code comments and detailed usage will be added in the future.
