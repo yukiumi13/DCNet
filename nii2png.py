@@ -3,28 +3,7 @@ import sys, getopt
 
 import imageio
 
-
-def main(argv):
-    inputfile = 'D:/Users/feng/ivus/ivus_from_FTY/yanxu/yuanxu.nii.gz'
-    outputfile = 'D:/Users/feng/ivus/ivus_from_FTY/yanxu/ma/'
-    image_name_root = 'IMG-0022-'
-    mode ='ma'
-    try:
-        opts, args = getopt.getopt(argv, "hi:o:", ["ifile=", "ofile="])
-    except getopt.GetoptError:
-        print('nii2png.py -i <inputfile> -o <outputfile>')
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt == '-h':
-            print('nii2png.py -i <inputfile> -o <outputfile>')
-            sys.exit()
-        elif opt in ("-i", "--input"):
-            inputfile = arg
-        elif opt in ("-o", "--output"):
-            outputfile = arg
-
-    print('Input file is ', inputfile)
-    print('Output folder is ', outputfile)
+def convert(inputfile, outputfile, image_name_root='IMG-0022-', mode = 'ma'):
 
     # set fn as your 4d nifti file
     image_array = nibabel.load(inputfile).get_data()
@@ -67,6 +46,8 @@ def main(argv):
                     print('Moved.'+ str(slice_counter))
 
         print('Finished converting images')
+
+        return 
 
     # else if 3D image inputted
     elif len(image_array.shape) == 3:
@@ -119,9 +100,42 @@ def main(argv):
                     print('Moved.')
 
         print('Finished converting images')
+        return
 
     else:
         print('Not a 3D or 4D Image. Please try again.')
+        return
+
+def main(argv):
+    inputfolder = 'Desktop/ScrData'
+    outputfolder = 'Desktop/ScrData/IMG'
+    image_name_root = 'IMG-0022-'
+    mode ='ma'
+    labelFolder = 'Label'
+    sampleFolder = 'Sample'
+    try:
+        opts, args = getopt.getopt(argv, "hi:o:", ["ifile=", "ofile="])
+    except getopt.GetoptError:
+        print('nii2png.py -i <inputfolder> -o <outputfolder>')
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            print('nii2png.py -i <inputfolder> -o <outputfolder>')
+            sys.exit()
+        elif opt in ("-i", "--input"):
+            inputfolder = arg
+        elif opt in ("-o", "--output"):
+            outputfolder = arg
+    
+
+    print('Input folder is ', inputfolder)
+    print('Output folder is ', outputfolder)
+    
+    labelPath = inputfolder + '/' + labelFolder
+    labelFiles = os.listdir(labelPath)
+    
+    for file in labelFiles:
+       convert(labelPath + '/' + file, outputfolder + '/' + 'Label') 
 
 
 # call the function to start the program
