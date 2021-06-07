@@ -6,7 +6,7 @@ import imageio
 def convert(inputfile, outputfile, image_name_root, mode = 'ma'):
 
     # set fn as your 4d nifti file
-    image_array = nibabel.load(inputfile).get_data()
+    image_array = nibabel.load(inputfile).get_fdata()
     print(len(image_array.shape))
 
     # if 4D image inputted
@@ -73,14 +73,14 @@ def convert(inputfile, outputfile, image_name_root, mode = 'ma'):
                 if mode == 'ma':
                     for i in range(nx):
                         for j in range(ny):
-                            if data[i,j]==1:
+                            if data[i,j] == 1:
                                 data[i,j] = data[i,j]*255
                             if data[i,j] == 2:
                                 data[i,j] = data[i,j]*127.5
                 else:
                     for i in range(nx):
                         for j in range(ny):
-                            if data[i,j]==1:
+                            if data[i,j] == 1:
                                 data[i,j] = data[i,j]*255
                             if data[i,j] == 2:
                                 data[i,j] = 0
@@ -107,8 +107,8 @@ def convert(inputfile, outputfile, image_name_root, mode = 'ma'):
         return
 
 def main(argv):
-    inputfolder = 'Desktop/ScrData'
-    outputfolder = 'Desktop/ScrData/IMG'
+    inputfolder = '../SrcData'
+    outputfolder = '../SrcData/IMG'
     mode ='ma'
     labelFolder = 'Label'
     sampleFolder = 'Sample'
