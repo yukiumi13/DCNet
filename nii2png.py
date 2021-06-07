@@ -1,9 +1,9 @@
-import scipy, numpy, shutil, os, nibabel
+import scipy, numpy, shutil, os, nibabel, re
 import sys, getopt
 
 import imageio
 
-def convert(inputfile, outputfile, image_name_root='IMG-0022-', mode = 'ma'):
+def convert(inputfile, outputfile, image_name_root, mode = 'ma'):
 
     # set fn as your 4d nifti file
     image_array = nibabel.load(inputfile).get_data()
@@ -109,12 +109,11 @@ def convert(inputfile, outputfile, image_name_root='IMG-0022-', mode = 'ma'):
 def main(argv):
     inputfolder = 'Desktop/ScrData'
     outputfolder = 'Desktop/ScrData/IMG'
-    image_name_root = 'IMG-0022-'
     mode ='ma'
     labelFolder = 'Label'
     sampleFolder = 'Sample'
     try:
-        opts, args = getopt.getopt(argv, "hi:o:", ["ifile=", "ofile="])
+        opts, args = getopt.getopt(argv, "i:o:", ["ifile=", "ofile="])
     except getopt.GetoptError:
         print('nii2png.py -i <inputfolder> -o <outputfolder>')
         sys.exit(2)
@@ -135,8 +134,17 @@ def main(argv):
     labelFiles = os.listdir(labelPath)
     
     for file in labelFiles:
-       convert(labelPath + '/' + file, outputfolder + '/' + 'Label') 
+        image_root = re.match('mask-*[0-9]*[0-9]',file)
+        image_root = image_root.group()  
+        convert(labelPath + '/' + file, outputfolder + '/' + 'Label_ma',image_root, mode)
+    
+    samplePath = inputfolder + '/' + sampleFolder
+    sampleFiles = os.listdir(samplePath)
 
+    for file in sampleFiles:
+        image_root = re.match('sample[0-9]*[0-9]',file)
+        image_root = image_root.group()  
+        convert(labelPath + '/' + file, outputfolder + '/' + 'sample',image_root, mode)
 
 # call the function to start the program
 if __name__ == "__main__":
