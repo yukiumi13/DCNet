@@ -3,6 +3,7 @@ import sys, getopt
 
 import imageio
 
+
 def convert(inputfile, outputfile, image_name_root, mode = 'ma'):
 
     # set fn as your 4d nifti file
