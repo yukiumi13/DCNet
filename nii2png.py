@@ -74,10 +74,10 @@ def convert(inputfile, outputfile, image_name_root, mode = 'ma'):
                 if mode == 'ma':
                     for i in range(nx):
                         for j in range(ny):
-                            if data[i,j] == 1:
-                                data[i,j] = data[i,j]*255
-                            if data[i,j] == 2:
-                                data[i,j] = data[i,j]*127.5
+                            if data[j,i] == 1:
+                                data[j,i] = data[j,i]*255
+                            if data[j,i] == 2:
+                                data[j,i] = data[j,i]*127.5
                 else:
                     for i in range(nx):
                         for j in range(ny):
@@ -89,7 +89,7 @@ def convert(inputfile, outputfile, image_name_root, mode = 'ma'):
                 # alternate slices and save as png
                 if (slice_counter % 1) == 0:
                     print('Saving image...'+ str(slice_counter))
-                    image_name = image_name_root + "%05d"%(slice_counter+1) + ".jpg"
+                    image_name = image_name_root + "%05d"%(slice_counter+1) + ".png"
                     imageio.imwrite(image_name, data)
                     print('Saved.'+ str(slice_counter))
 
