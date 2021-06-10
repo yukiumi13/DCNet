@@ -1,13 +1,13 @@
 #coding=utf-8#
 import numpy as np
-from code2.config import Config as cg
+from config import Config as cg
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
 import sys
 sys.path.append('/home/fengtianyuan/code2')
-from code2.auxiliary_functions import *
+from auxiliary_functions import *
 from torch.utils.data import Dataset, DataLoader
-from code2.loadnpy import ImageDataset
+from loadnpy import ImageDataset
 import matplotlib.pyplot as plt
 import torchvision
 import torch
