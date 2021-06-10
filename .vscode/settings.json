@@ -9,5 +9,8 @@
     "python.linting.pydocstyleEnabled": false,
     "python.linting.pylamaEnabled": false,
     "python.linting.pycodestyleEnabled": false,
-    "python.languageServer": "Pylance"
+    "python.languageServer": "Pylance",
+    "python.autoComplete.extraPaths": [
+    "~/opt/anoconda3/envs/torch/lib/python3.5/site-packages/" 
+    ],
 }

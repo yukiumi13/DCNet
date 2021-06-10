@@ -6,6 +6,7 @@ from torch.utils.data import Dataset
 from torchvision import transforms
 
 torch.manual_seed(1)  # reproducible
+
 class ImageDataset(Dataset):
     def __init__(self, image, label):
         self.image = np.load(image)  # 加载npy数据

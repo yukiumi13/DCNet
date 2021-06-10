@@ -1,2 +1,3 @@
-import sys
-print(sys.path)
+import cv2
+
+cv2.imshow()
