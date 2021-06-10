@@ -8,7 +8,7 @@ def main(Args):
     labelFolder = 'Label'
     sampleFolder = 'Sample'
     try:
-        opts, args = getopt.getopt(argv, "i:o:", ["ifile=", "ofile="])
+        opts, args = getopt.getopt(Args, "i:o:", ["ifile=", "ofile="])
     except getopt.GetoptError:
         print('nii2png.py -i <inputfolder> -o <outputfolder>')
         sys.exit(2)
