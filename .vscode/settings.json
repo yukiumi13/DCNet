@@ -13,4 +13,5 @@
     "python.autoComplete.extraPaths": [
     "~/opt/anoconda3/envs/torch/lib/python3.5/site-packages/" 
     ],
+    "jupyter.jupyterServerType": "local",
 }
