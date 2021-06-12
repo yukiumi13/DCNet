@@ -1,5 +1,4 @@
 
-
 class Config:
     image_size = 256   #src image size wd = ht
     image_channel = 3  #src image channel
