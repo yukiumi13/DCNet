@@ -1,3 +1,6 @@
+
+'该模块将指定路径的MRI图像(nii.gz格式)与标签通过Crop、Pad操作reszie到设定大小并将sample和label分别合并为两个npy数组并保存到指定路径.'
+
 from numpy.core.arrayprint import dtype_is_implied
 from config import Config as cg
 import nibabel as nib
@@ -139,7 +142,9 @@ def main(Args):
     label = label[:,:,1:]
     sample = np.transpose(sample, (2,0,1))
     label = np.transpose(label, (2,0,1))
-    # nii体素值非灰度值，可以在[0,255]之外
+    sample = np.expand_dims(sample, axis=1)
+    label = np.expand_dims(label, axis =1)
+    # nii体素值非灰度值，可以在[0,255]之外, 转换为NCHW格式
 
     print('All samples loaded & npy shape is:' + str(sample.shape))
     print('All labels loaded & npy shape is:' + str(label.shape))

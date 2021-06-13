@@ -1,6 +1,4 @@
 (torch) menglidaren@deMacBook-Air HDFP-pytorch % /Users/menglidaren/opt/anaconda3/envs/torch/bin/python /Users/menglidaren/Desktop/HDFP-pytorch/nii2npy.py
-Created ouput directory: ../SrcData/IMGsample
-Created ouput directory: ../SrcData/IMGlabel
 Load samples
 sample20.nii.gz size:(350, 320, 72)
 sample20.nii.gz Resized:(256, 256, 72)
@@ -115,6 +113,7 @@ mask-13.nii.gz loaded & appended.
 mask-1.nii.gz size:(320, 350, 104)
 mask-1.nii.gz Resized:(256, 256, 104)
 mask-1.nii.gz loaded & appended.
-All samples loaded & npy shape is:(256, 256, 1389)
-All labels loaded & npy shape is:(256, 256, 1389)
+All samples loaded & npy shape is:(1389, 1, 256, 256)
+All labels loaded & npy shape is:(1389, 1, 256, 256)
 samples have been saved in../SrcData/IMG/Sample
+labels have been saved in../SrcData/IMG/Label
