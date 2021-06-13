@@ -12,5 +12,8 @@ for file in os.listdir('../SrcData/Sample'):
     except nib.filebasedimages.ImageFileError :
         pass
 '''
-a = (1, 2, 3)
-print(a[:2])
+a = np.random.normal(size = [10,9,8])
+print(a.shape)
+b = np.transpose(a, (2,0,1))
+print(b.shape)
+assert a[4,5,6]==b[6,4,5]
