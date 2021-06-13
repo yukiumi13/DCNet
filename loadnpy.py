@@ -11,16 +11,20 @@ class ImageDataset(Dataset):
     def __init__(self, image, label):
         self.image = np.load(image)  # 加载npy数据
         self.label = np.load(label)
-        self.transforms = transforms.Compose([transforms.ToTensor()])  # 转为tensor形式
+        self.image = np.expand_dims(image, axis=1)
+        self.label = np.expand_dims(label, axis=1)
+        self.image = torch.tensor(image)
+        self.label = torch.tensor(label)
+        # self.transforms = transforms.Compose([transforms.ToTensor()])  # 转为tensor形式
 
     def __getitem__(self, index):
         # MRI:
-        image = np.array(self.image, dtype=np.float32)
-        batchs = image.shape[0]
-        image = np.reshape(image, newshape=[batchs, cg.image_size, cg.image_size, cg.image_channel])
-        image = image[index, :, :, :]
-        image = Image.fromarray(np.uint16(image))
-        # image = self.transforms(image)
+        # image = np.array(self.image, dtype=np.uint16)
+        # batchs = image.shape[0]
+        # image = np.reshape(image, newshape=[batchs, cg.image_size, cg.image_size, cg.image_channel])
+        image = self.image[index, :, :, :]
+        # image = Image.fromarray(np.uint16(image))
+        # image = torch.tensor()
 
         #ivus图像使用：
         '''
@@ -34,12 +38,9 @@ class ImageDataset(Dataset):
 
 
         label = np.array(self.label, dtype=np.float32)
-        labelbatchs = label.shape[0]
-        label = np.reshape(label, newshape=[labelbatchs, cg.image_size, cg.image_size, 1])
         label = label[index, :, :, :]
         label = np.squeeze(label)
-        label = Image.fromarray(np.uint8(label))
-        label = self.transforms(label)
+        label = torch.tensor()
         return image, label
 
     def __len__(self):
@@ -50,18 +51,18 @@ class ImageDataset(Dataset):
 class ImageDataset_pred(Dataset):
     def __init__(self, image):
         self.image = np.load(image)  # 加载npy数据
-        self.transforms = transforms.Compose([transforms.ToTensor()])  # 转为tensor形式
+        # self.transforms = transforms.Compose([transforms.ToTensor()])  # 转为tensor形式
 
     def __getitem__(self, index):
         # cv数据集上使用
-        image = np.array(self.image, dtype=np.float32)
+        # image = np.array(self.image, dtype=np.float32)
 
-        batchs = image.shape[0]
-        image = np.reshape(image, newshape=[batchs, 256, 256, 3])
-        image = torch.from_numpy(image)
-        image = image.permute(0, 3, 1, 2)
-        image = image[index, :, :, :]
-        image = images_preprocessing(image)
+        # batchs = image.shape[0]
+        # image = np.reshape(image, newshape=[batchs, 256, 256, 3])
+        # image = torch.from_numpy(image)
+        # image = image.permute(0, 3, 1, 2)
+        image = self.image[index, :, :, :]
+        # image = images_preprocessing(image)
         return image
 
     def __len__(self):
