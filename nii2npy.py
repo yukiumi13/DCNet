@@ -137,6 +137,8 @@ def main(Args):
     
     sample = sample[:,:,1:]
     label = label[:,:,1:]
+    sample = np.transpose(sample, (2,0,1))
+    label = np.transpose(label, (2,0,1))
     # nii体素值非灰度值，可以在[0,255]之外
 
     print('All samples loaded & npy shape is:' + str(sample.shape))
