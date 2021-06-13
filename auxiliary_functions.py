@@ -1,8 +1,7 @@
 #coding=utf-8#
 import sys
 import numpy as np
-import sys
-sys.path.append('/home/fengtianyuan/code1')
+# sys.path.append('/home/fengtianyuan/code1')
 from config import Config as cg
 import torch.nn as nn
 import torch
