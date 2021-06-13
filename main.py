@@ -2,9 +2,9 @@
 import numpy as np
 from config import Config as cg
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3" 选择计算卡
 import sys
-sys.path.append('/home/fengtianyuan/code2')
+# sys.path.append('/home/fengtianyuan/code2') # 添加搜索目录
 from auxiliary_functions import *
 from torch.utils.data import Dataset, DataLoader
 from loadnpy import ImageDataset
@@ -15,9 +15,9 @@ import torch
 
 def train(data):
     ssm = single_salicency_model(drop_rate=0.2, layers=12)
-    ssm = torch.nn.DataParallel(ssm, device_ids=[0, 1])
+    # ssm = torch.nn.DataParallel(ssm, device_ids=[0, 1]) 分布式训练
     ssm.cuda()
-    ssm.load_state_dict(torch.load('/home/fengtianyuan/log/ckpt_lumen29_103.pth'))
+    # ssm.load_state_dict(torch.load('/home/fengtianyuan/log/ckpt_lumen29_103.pth'))
     ssm = ssm.train()
     torch.backends.cudnn.enabled = True
     torch.backends.cudnn.benchmark = True
