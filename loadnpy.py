@@ -14,23 +14,23 @@ class ImageDataset(Dataset):
         self.transforms = transforms.Compose([transforms.ToTensor()])  # 转为tensor形式
 
     def __getitem__(self, index):
-        # cv数据集上使用
+        # MRI:
         image = np.array(self.image, dtype=np.float32)
-        # batchs = image.shape[0]
-        # image = np.reshape(image, newshape=[batchs, cg.image_size, cg.image_size, cg.image_channel])
-        # image = image[index, :, :, :]
-        # image = Image.fromarray(np.uint8(image))
+        batchs = image.shape[0]
+        image = np.reshape(image, newshape=[batchs, cg.image_size, cg.image_size, cg.image_channel])
+        image = image[index, :, :, :]
+        image = Image.fromarray(np.uint16(image))
         # image = self.transforms(image)
 
         #ivus图像使用：
-
+        '''
         batchs = image.shape[0]
         image = np.reshape(image, newshape=[batchs, cg.image_size, cg.image_size, cg.image_channel])
         image = torch.from_numpy(image)
         image = image.permute(0, 3, 1, 2)
         image = image[index, :, :, :]
         image = images_preprocessing(image)
-
+        '''
 
 
         label = np.array(self.label, dtype=np.float32)
