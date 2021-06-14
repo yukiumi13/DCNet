@@ -21,10 +21,12 @@ def train(data):
     ssm = ssm.train()
     torch.backends.cudnn.enabled = True
     torch.backends.cudnn.benchmark = True
+    # 启用cuDNN库并自主选择convolution算法
     optimizer = torch.optim.SGD(ssm.parameters(), lr=0.002, momentum=0.9, weight_decay=0.0001, nesterov=True)
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, [25, 30], 0.1)
+    # lrdecay管理器
     min_loss = 10
-    for epoch in range(40):
+    for epoch in range(400):
         for i, (imagedata, labeldata) in enumerate(data):
             xs = imagedata.cuda()
             ys = labeldata.cuda()
@@ -49,21 +51,21 @@ def train(data):
                 ls643_2 = trans(ls643_1)
                 plt.imshow(ls643_2)
                 plt.axis('off')
-                plt.savefig('/home/fengtianyuan/data/test2.jpg')
+                plt.savefig('./test2.jpg')
                 plt.show()
             if cross_entropy < min_loss:
                 min_loss = cross_entropy
-                print('淇濆瓨妯″瀷')
-                torch.save(ssm.state_dict(), "/home/fengtianyuan/log/cv/mode/" + "nacv_" + str(epoch) + '_' + str(i) + ".pth")
+                print('cross_entropy < 10 ')
+                torch.save(ssm.state_dict(), "./parameters/" +  str(epoch) + '_' + str(i) + ".pth")
             if i % 50 == 0:
-                print('淇濆瓨loss')
+                print('保存loss')
                 torch.save({'epoch': epoch + 1, 'cross_loss': cross_entropy, 'mae': MAE, 'dice': dice_yp},
-                       "/home/fengtianyuan/log/cv/loss/" + "nacv_" + str(epoch) + '_' + str(i) + ".pth")
+                       "./" + "loss" + str(epoch) + '_' + str(i) + ".pth")
             optimizer.zero_grad()
             cross_entropy.backward()
             optimizer.step()
 
-            print('epoch=', epoch, "娆℃暟=", i, '缁煎悎鎹熷け=', cross_entropy, 'mae=', MAE, 'prec=', prec, 'recall=', recall,
+            print('epoch=', epoch, "sampleNo.=", i, 'cross_entropy=', cross_entropy, 'mae=', MAE, 'prec=', prec, 'recall=', recall,
                   'fscore=', F_score, 'dice=', dice_yp)
     scheduler.step()
 
@@ -75,7 +77,7 @@ def test(data):
     ssm = single_salicency_model(drop_rate=0.2, layers=12)
     ssm = torch.nn.DataParallel(ssm, device_ids=[0, 1])
     ssm.cuda()
-    ssm.load_state_dict(torch.load('/home/fengtianyuan/ma_2_162.pth'))
+    # ssm.load_state_dict(torch.load('/home/fengtianyuan/ma_2_162.pth'))
     ssm.eval()
     for epoch in range(1):
         for i, (imagedata, labeldata) in enumerate(data):
@@ -94,12 +96,15 @@ def test(data):
             cross_entropy = loss_yp + loss_64_3 + loss_64_2 + loss_64_1 + loss_128 + loss_256
             MAE = torch.mean(torch.abs(yp - ysc))
             prec, recall, F_score = F_measure(ysc, yp)
-            print('娴嬭瘯','缁煎悎鎹熷け=', cross_entropy , 'mae=', MAE, 'fscore=', F_score)
+            print('Test','Cross Entropy=', cross_entropy , 'MAE=', MAE, 'Fscore=', F_score)
 
 
 if __name__ == '__main__':
-    os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
-    data1 = ImageDataset('/home/fengtianyuan/saliencydetectdataset/ivus_t.npy', '/home/fengtianyuan/saliencydetectdataset/ivus_ma_t.npy')
+    # os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
+    samplePath = os.listdir('../IMG/sample')
+    labelPath = os.listdir('../IMG/label')
+    data1 = ImageDataset('../IMG/sample/' + samplePath, '../IMG/label/' + labelPath)
     data = DataLoader(data1, batch_size=16, shuffle=True, num_workers=1, pin_memory=True)
-    test(data)
+    train(data)
+    # test(data)
 
