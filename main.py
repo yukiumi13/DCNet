@@ -103,7 +103,7 @@ if __name__ == '__main__':
     # os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
     samplePath = os.listdir('../IMG/sample')
     labelPath = os.listdir('../IMG/label')
-    data1 = ImageDataset('../IMG/sample/' + samplePath, '../IMG/label/' + labelPath)
+    data1 = ImageDataset('../IMG/sample/' + samplePath[0], '../IMG/label/' + labelPath[0])
     data = DataLoader(data1, batch_size=16, shuffle=True, num_workers=1, pin_memory=True)
     train(data)
     # test(data)
