@@ -11,10 +11,8 @@ class ImageDataset(Dataset):
     def __init__(self, image, label):
         self.image = np.load(image)  # 加载npy数据
         self.label = np.load(label)
-        self.image = np.expand_dims(self.image, axis=1)
-        self.label = np.expand_dims(self.label, axis=1)
-        self.image = torch.tensor(image)
-        self.label = torch.tensor(label)
+        self.image = torch.tensor(self.image)
+        self.label = torch.tensor(self.label)
         # self.transforms = transforms.Compose([transforms.ToTensor()])  # 转为tensor形式
 
     def __getitem__(self, index):
@@ -40,7 +38,7 @@ class ImageDataset(Dataset):
         label = np.array(self.label, dtype=np.float32)
         label = label[index, :, :, :]
         label = np.squeeze(label)
-        label = torch.tensor()
+        label = torch.tensor(label)
         return image, label
 
     def __len__(self):
