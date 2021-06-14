@@ -107,4 +107,3 @@ if __name__ == '__main__':
     data = DataLoader(data1, batch_size=16, shuffle=True, num_workers=1, pin_memory=True)
     train(data)
     # test(data)
-
