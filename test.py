@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 '''
 for file in os.listdir('../SrcData/Sample'):
     try:
@@ -8,5 +9,4 @@ for file in os.listdir('../SrcData/Sample'):
     except nib.filebasedimages.ImageFileError :
         pass
 '''
-data = np.load('../SrcData/IMG/sample/sample.npy')
-data = np.squeeze(data)
+print(torch.cuda.is_available())
