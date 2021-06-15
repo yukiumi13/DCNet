@@ -55,13 +55,13 @@ def train(data):
                 plt.savefig('./test2.jpg')
                 plt.show()
             if cross_entropy < min_loss:
-                min_loss = cross_entropy
-                print('cross_entropy < 10 ')
-                torch.save(ssm.state_dict(), "./parameters/" +  str(epoch) + '_' + str(i) + ".pth")
+                    min_loss = cross_entropy
+                    print('保存参数 ')
+                    torch.save(ssm.state_dict(), "./parameters/" +  str(epoch) + '_' + str(i) + ".pth")
             if i % 50 == 0:
                 print('保存loss')
                 torch.save({'epoch': epoch + 1, 'cross_loss': cross_entropy, 'mae': MAE, 'dice': dice_yp},
-                       "./lossu" + "loss" + str(epoch) + '_' + str(i) + ".pth")
+                       "./loss/" + "loss" + str(epoch) + '_' + str(i) + ".pth")
             optimizer.zero_grad()
             cross_entropy.backward()
             optimizer.step()
