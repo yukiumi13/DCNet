@@ -61,7 +61,7 @@ def train(data):
             if i % 50 == 0:
                 print('保存loss')
                 torch.save({'epoch': epoch + 1, 'cross_loss': cross_entropy, 'mae': MAE, 'dice': dice_yp},
-                       "./" + "loss" + str(epoch) + '_' + str(i) + ".pth")
+                       "./lossu" + "loss" + str(epoch) + '_' + str(i) + ".pth")
             optimizer.zero_grad()
             cross_entropy.backward()
             optimizer.step()
