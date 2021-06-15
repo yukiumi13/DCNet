@@ -102,6 +102,6 @@ def test(data):
 if __name__ == '__main__':
     # os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
     data1 = ImageDataset('../IMG/sample/sample.npy', '../IMG/label/label.npy')
-    data = DataLoader(data1, batch_size=4, shuffle=True, num_workers=1, pin_memory=True)
+    data = DataLoader(data1, batch_size=4, shuffle=True, num_workers=1, pin_memory=False)
     train(data)
     # test(data)
