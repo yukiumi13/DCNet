@@ -47,7 +47,6 @@ def train(data):
             prec, recall, F_score = F_measure(ysc, yp)
             if i == 0:
                 ls643 = yp.clone().cpu()
-                1
                 ls643_1 = torch.squeeze(ls643)
                 ls643_2 = trans(ls643_1)
                 plt.imshow(ls643_2)
