@@ -48,7 +48,7 @@ def train(data):
             if i == 0:
                 ls643 = yp.clone().cpu()
                 print('ls643')
-                print(ls643.size)
+                print(ls643.size())
                 ls643_1 = torch.squeeze(ls643)
                 ls643_2 = trans(ls643_1)
                 plt.imshow(ls643_2)
