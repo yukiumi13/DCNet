@@ -4,19 +4,28 @@ import numpy as np
 import os
 import sys
 import cv2
+from config import Config as cg
 
 def main():
-    path_curr = sys.path[0]
-
     #########################  生成npy文件 #####################################
     ##############################################################
-
-    path = 'C:/Users/feng/Desktop/l/'
-    img_flat = data_process_mask_ivus(path)
-    np.save(r"C:/Users/feng/Desktop/l.npy", img_flat)
-    path = 'C:/Users/feng/Desktop/m/'
-    img_flat = data_process_mask_ivus(path)
-    np.save(r"C:/Users/feng/Desktop/m.npy", img_flat)
+    dataRoot = '../CVdataset'
+    datasetName = 'HKU-IS'
+    imgPath = dataRoot + '/' + datasetName + '/' + 'img'
+    imgFiles = os.listdir(imgPath)
+    img = data_process_img(imgPath, imgFiles)
+    '''若img格式为jpg
+    maskFiles = []
+    for i in imgFiles:
+        temp = i.replace('jpg','png')
+        maskFiles.append(temp)  
+    '''
+    np.save('../' + 'npys' + '/' + datasetName + '/'+'IMG' + '/' + 'sample' + '/' + 'sample' + '.npy', img)
+    print('numpy saved in' + '../' + 'npys' + '/' + datasetName + '/'+'IMG' + '/' + 'sample' + '/' + 'sample' + '.npy')
+    maskPath = dataRoot + '/' + datasetName + '/' + 'gt'
+    mask = data_process_mask(maskPath, imgFiles)
+    np.save('../' + 'npys' + '/' + datasetName + '/'+'IMG' + '/' + 'label' + '/' + 'label' + '.npy', mask)
+    print('numpy saved in' + '../' + 'npys' + '/' + datasetName + '/'+'IMG' + '/' + 'label' + '/' + 'label' + '.npy')
 
 
     ###############################################################
@@ -36,12 +45,11 @@ def main():
 
 
 
-def data_process_img_ivus(path):
-    content = os.listdir(path)
+def data_process_img(path, content):
 
-    img_flat_mat = []
-    for i in range(len(content)):
-        img_path = path + content[i]
+    for i in content :
+        img_path = path + '/' + i
+        print('processing image', img_path)
         img = cv2.imread(img_path) # cv2.imread是按照BGR的顺序读的图像
         b, g, r = cv2.split(img)
         img = cv2.merge([r, g, b])
@@ -51,25 +59,20 @@ def data_process_img_ivus(path):
         # img[360:384, 1:93, :] = 30
         # img[361:384, 329:384, :] = 30
 
-        img = cv2.resize(img, (256, 256))
-        img_flat = np.reshape(img, [1, -1])
-        print('processing image', img_path)
-        if 0 == i:
-            img_flat_mat = img_flat
-        else:
-            img_flat_mat = np.vstack((img_flat_mat, img_flat))
-
+        img = cv2.resize(img, (cg.image_size, cg.image_size))
+        img = img_normalize(img) # 图像标准化
         # io.imshow(img)
         # io.show()
 
-    return img_flat_mat
+    print(str(len(content)) +' images loaded')
 
-def data_process_mask_ivus(path):
-    content = os.listdir(path)
+    return img
 
-    img_flat_mat = []
-    for i in range(len(content)):
-        img_path = path + content[i]
+def data_process_mask(path, content):
+
+    for i in content:
+        img_path = path + '/' + i
+        print('processing mask', img_path)
         img = cv2.imread(img_path)
         if 3 == img.ndim:
             img = img[:, :, 0]
@@ -78,18 +81,12 @@ def data_process_mask_ivus(path):
 
         # 插值后会有数据变得不是0和1, 下面进行二值化
         _, img = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)
-
-        img_flat = np.reshape(img, [1, -1])
-        print('processing mask', img_path)
-        if 0 == i:
-            img_flat_mat = img_flat
-        else:
-            img_flat_mat = np.vstack((img_flat_mat, img_flat))
-
         # io.imshow(img)
         # io.show()
 
-    return img_flat_mat
+    print(str(len(content)) +' masks loaded')
+
+    return img
 
 def data_process_img_oct(path):
     content = os.listdir(path)
@@ -166,6 +163,16 @@ def data_process_mask_oct(path):
         # a=0
 
     return img_flat_mat
+def img_normalize(images):
+  images = images.astype(np.float64)
+  images[:, :, 2] -= np.mean(images[:,:,2])
+  images[:, :, 1] -= np.mean(images[:,:,1])
+  images[:, :, 0] -= np.mean(images[:,:,0])
+
+  images[:, :, 2] /= ( np.std(images[:,:,2]) + 1e-12)
+  images[:, :, 1] /= ( np.std(images[:,:,1]) + 1e-12)
+  images[:, :, 0] /= ( np.std(images[:,:,0]) + 1e-12)
+  return images
 
 if __name__ == '__main__':
     main()
