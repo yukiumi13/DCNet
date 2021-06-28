@@ -13,6 +13,7 @@ class ImageDataset(Dataset):
         self.label = np.load(label)
         self.image = torch.tensor(self.image)
         self.label = torch.tensor(self.label)
+        self.image = images_preprocessing(self.image)
         # self.transforms = transforms.Compose([transforms.ToTensor()])  # 转为tensor形式
 
     def __getitem__(self, index):
