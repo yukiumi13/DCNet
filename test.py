@@ -1,5 +1,7 @@
 import numpy as np
 import torch
+import cv2
+import os
 '''
 for file in os.listdir('../SrcData/Sample'):
     try:
@@ -9,4 +11,4 @@ for file in os.listdir('../SrcData/Sample'):
     except nib.filebasedimages.ImageFileError :
         pass
 '''
-print(torch.cuda.is_available())
+print(os.path.exists('../CVdataset/HKU-IS/img/.DS_store'))
