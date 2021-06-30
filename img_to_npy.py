@@ -47,6 +47,7 @@ def main():
 
 def data_process_img(path, content):
 
+    imgs=[] 
     for i in content :
         img_path = path + '/' + i
         print('processing image', img_path)
@@ -63,13 +64,18 @@ def data_process_img(path, content):
         img = img_normalize(img) # 图像标准化
         # io.imshow(img)
         # io.show()
-
+        imgs.append(imgs)
+    
+    imgs = np.stack(imgs,axis=0)
     print(str(len(content)) +' images loaded')
+    print(imgs.shape)
+    imgs = np.transpose(imgs,(0,3,1,2))
+    print('img shape is ' + str(imgs.shape))
 
-    return img
+    return imgs
 
 def data_process_mask(path, content):
-
+    imgs = []
     for i in content:
         img_path = path + '/' + i
         print('processing mask', img_path)
@@ -83,10 +89,14 @@ def data_process_mask(path, content):
         _, img = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)
         # io.imshow(img)
         # io.show()
+        imgs.append(img)
 
+    imgs = np.stack(imgs,axis=0)
     print(str(len(content)) +' masks loaded')
+    imgs = np.transpose(imgs,(0,3,1,2))
+    print('mask shape is ' + str(imgs.shape)) 
 
-    return img
+    return imgs
 
 def data_process_img_oct(path):
     content = os.listdir(path)
