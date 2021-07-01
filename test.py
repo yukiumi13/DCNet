@@ -62,5 +62,6 @@ print(b.shape)
 c = np.stack(c)
 print(c.shape)
 '''
-a = np.stack([None,None])
-print(a)
+a = np.zeros([2,2,3])
+b = np.expand_dims(a,axis=1)
+print(b.shape)

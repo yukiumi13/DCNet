@@ -14,6 +14,7 @@ def main():
     imgPath = dataRoot + '/' + datasetName + '/' + 'img'
     imgFiles = os.listdir(imgPath)
     img = data_process_img(imgPath, imgFiles)
+    print('img shape is ' + str(img.shape))
     '''若img格式为jpg
     maskFiles = []
     for i in imgFiles:
@@ -24,6 +25,7 @@ def main():
     print('numpy saved in' + '../' + 'npys' + '/' + datasetName + '/'+'IMG' + '/' + 'sample' + '/' + 'sample' + '.npy')
     maskPath = dataRoot + '/' + datasetName + '/' + 'gt'
     mask = data_process_mask(maskPath, imgFiles)
+    print('mask shape is ' + str(mask.shape)) 
     np.save('../' + 'npys' + '/' + datasetName + '/'+'IMG' + '/' + 'label' + '/' + 'label' + '.npy', mask)
     print('numpy saved in' + '../' + 'npys' + '/' + datasetName + '/'+'IMG' + '/' + 'label' + '/' + 'label' + '.npy')
 
@@ -61,7 +63,7 @@ def data_process_img(path, content):
         # img[361:384, 329:384, :] = 30
 
         img = cv2.resize(img, (cg.image_size, cg.image_size))
-        img = img_normalize(img) # 图像标准化
+        #img = img_normalize(img) # 图像标准化
         # io.imshow(img)
         # io.show()
         imgs.append(img)
@@ -92,8 +94,8 @@ def data_process_mask(path, content):
         imgs.append(img)
 
     imgs = np.stack(imgs,axis=0)
+    imgs = np.expand_dims(imgs, axis = 1)
     print(str(len(content)) +' masks loaded')
-    imgs = np.transpose(imgs,(0,3,1,2))
     print('mask shape is ' + str(imgs.shape)) 
 
     return imgs
@@ -173,6 +175,7 @@ def data_process_mask_oct(path):
         # a=0
 
     return img_flat_mat
+'''
 def img_normalize(images):
   images = images.astype(np.float64)
   images[:, :, 2] -= np.mean(images[:,:,2])
@@ -183,6 +186,7 @@ def img_normalize(images):
   images[:, :, 1] /= ( np.std(images[:,:,1]) + 1e-12)
   images[:, :, 0] /= ( np.std(images[:,:,0]) + 1e-12)
   return images
+'''
 
 if __name__ == '__main__':
     main()
