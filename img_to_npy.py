@@ -64,9 +64,9 @@ def data_process_img(path, content):
         img = img_normalize(img) # 图像标准化
         # io.imshow(img)
         # io.show()
-        imgs.append(imgs)
+        imgs.append(img)
     
-    imgs = np.stack(imgs,axis=0)
+    imgs = np.stack(imgs)
     print(str(len(content)) +' images loaded')
     print(imgs.shape)
     imgs = np.transpose(imgs,(0,3,1,2))
