@@ -12,7 +12,9 @@ class ImageDataset(Dataset):
         self.image = np.load(image)  # 加载npy数据
         self.label = np.load(label)
         self.image = torch.tensor(self.image)
+        self.image = torch.float64(self.image)
         self.label = torch.tensor(self.label)
+        self.label = torch.float64(self.label)
         self.image = images_preprocessing(self.image)
         # self.transforms = transforms.Compose([transforms.ToTensor()])  # 转为tensor形式
 
@@ -71,7 +73,6 @@ class ImageDataset_pred(Dataset):
 
 
 def images_preprocessing(images):
-
 
     images[2, :, :] -= torch.mean(images[2,:,:])
     images[1, :, :] -= torch.mean(images[1,:,:])
