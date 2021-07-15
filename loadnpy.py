@@ -11,9 +11,9 @@ class ImageDataset(Dataset):
     def __init__(self, image, label):
         self.image = np.load(image)  # 加载npy数据
         self.label = np.load(label)
-        self.image = torch.tensor(self.image)
+        self.image = torch.from_numpy(self.image)
         self.image = self.image.float()
-        self.label = torch.tensor(self.label)
+        self.label = torch.from_numpy(self.label)
         self.label = self.label.float()
         self.image = images_preprocessing(self.image)
         # self.transforms = transforms.Compose([transforms.ToTensor()])  # 转为tensor形式
