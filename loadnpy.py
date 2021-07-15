@@ -11,11 +11,6 @@ class ImageDataset(Dataset):
     def __init__(self, image, label):
         self.image = np.load(image)  # 加载npy数据
         self.label = np.load(label)
-        self.image = torch.from_numpy(self.image)
-        self.image = self.image.float()
-        self.label = torch.from_numpy(self.label)
-        self.label = self.label.float()
-        self.image = images_preprocessing(self.image)
         # self.transforms = transforms.Compose([transforms.ToTensor()])  # 转为tensor形式
 
     def __getitem__(self, index):
@@ -23,7 +18,11 @@ class ImageDataset(Dataset):
         # image = np.array(self.image, dtype=np.uint16)
         # batchs = image.shape[0]
         # image = np.reshape(image, newshape=[batchs, cg.image_size, cg.image_size, cg.image_channel])
+         
         image = self.image[index, :, :, :]
+        self.image = torch.from_numpy(self.image)
+        self.image = self.image.type(torch.FloatTensor)
+        self.image = images_preprocessing(self.image)
         # image = Image.fromarray(np.uint16(image))
         # image = torch.tensor()
 
@@ -37,7 +36,7 @@ class ImageDataset(Dataset):
         image = images_preprocessing(image)
         '''
 
-
+    
         label = np.array(self.label, dtype=np.float32)
         label = label[index, :, :, :]
         label = np.squeeze(label)
