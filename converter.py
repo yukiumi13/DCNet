@@ -1,3 +1,6 @@
+####################################
+# 去掉并行模型的参数文件中的Module.前缀 #
+####################################
 import torch, torchvision
 from collections import OrderedDict
 dict = torch.load('bmvc_cv.pth')
