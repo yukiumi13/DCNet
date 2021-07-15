@@ -41,7 +41,7 @@ class ImageDataset(Dataset):
         label = np.array(self.label, dtype=np.float32)
         label = label[index, :, :, :]
         label = np.squeeze(label)
-        label = torch.tensor(label)
+        label = torch.from_numpy(label)
         return image, label
 
     def __len__(self):
