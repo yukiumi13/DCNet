@@ -8,7 +8,7 @@ import torch
 from upsample_skimage import  upsample
 import torchvision
 import os
-batch_size = 8
+batch_size = 4
 log_dir = cg.root_path + "/log"
 class single_salicency_model(nn.Module):
     def __init__(self, drop_rate, layers):
