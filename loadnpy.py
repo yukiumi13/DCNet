@@ -20,9 +20,9 @@ class ImageDataset(Dataset):
         # image = np.reshape(image, newshape=[batchs, cg.image_size, cg.image_size, cg.image_channel])
          
         image = self.image[index, :, :, :]
-        self.image = torch.from_numpy(self.image)
-        self.image = self.image.type(torch.FloatTensor)
-        self.image = images_preprocessing(self.image)
+        image = torch.from_numpy(image)
+        image = image.type(torch.FloatTensor)
+        image = images_preprocessing(image)
         # image = Image.fromarray(np.uint16(image))
         # image = torch.tensor()
 
