@@ -107,6 +107,6 @@ if __name__ == '__main__':
     samplePath = os.listdir('../IMG/sample')
     labelPath = os.listdir('../IMG/label')
     data1 = ImageDataset('../IMG/sample/' + samplePath[0], '../IMG/label/' + labelPath[0])
-    data = DataLoader(data1, batch_size=4, shuffle=True, num_workers=1, pin_memory=False)
+    data = DataLoader(data1, batch_size=4, shuffle=True, pin_memory=False)
     train(data)
     # test(data)
