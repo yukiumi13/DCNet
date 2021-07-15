@@ -48,9 +48,9 @@ def train(data):
             if i == 0:
                 ls643 = yp.clone().cpu()
                 ls643 = ls643[0,:,:,:]
-                print(yp.shape)
                 ls643_1 = torch.squeeze(ls643)
                 ls643_2 = trans(ls643_1)
+                print(np.any(np.isnan(np.ndarray(yp))))
                 plt.imshow(ls643_2)
                 plt.axis('off')
                 plt.savefig('./test2.jpg')
