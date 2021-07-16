@@ -149,8 +149,8 @@ def main(Args):
     print('All samples loaded & npy shape is:' + str(sample.shape))
     print('All labels loaded & npy shape is:' + str(label.shape))
 
-    np.save(outputfolder + '/' + sampleFolder + '/' + 'sample1-' + str(len(labelFile)) + '_' + time.strftime('%Y%m%d%H%M%S',time.localtime(time.time()))+'.npy', sample)
-    np.save(outputfolder + '/' + labelFolder + '/' + 'label1-' + str(len(labelFile)) + '_' + time.strftime('%Y%m%d%H%M%S',time.localtime(time.time()))+'.npy', label)
+    np.save(outputfolder + '/' + sampleFolder + '/' + 'sample.npy', sample)
+    np.save(outputfolder + '/' + labelFolder + '/' + 'label.npy', label)
     
     print('samples have been saved in' + outputfolder + '/' + sampleFolder)
     print('labels have been saved in' + outputfolder + '/' + labelFolder)
