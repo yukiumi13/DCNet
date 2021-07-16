@@ -45,16 +45,16 @@ def train(data):
             cross_entropy = loss_yp + loss_64_3 + loss_64_2 + loss_64_1 + loss_128 + loss_256
             MAE = torch.mean(torch.abs(yp - ysc))
             prec, recall, F_score = F_measure(ysc, yp)
-            if i == 0:
-                ls643 = yp.clone().cpu()
-                ls643 = ls643[0,:,:,:]
-                ls643_1 = torch.squeeze(ls643)
-                ls643_2 = trans(ls643_1)
-                print(np.any(np.isnan(ls643.detach().numpy())))
-                plt.imshow(ls643_2)
-                plt.axis('off')
-                plt.savefig('./test2.jpg')
-                plt.show()
+            # if i == 0:
+            ls643 = yp.clone().cpu()
+            ls643 = ls643[0,:,:,:]
+            ls643_1 = torch.squeeze(ls643)
+            ls643_2 = trans(ls643_1)
+            print(np.any(np.isnan(ls643.detach().numpy())))
+            plt.imshow(ls643_2)
+            plt.axis('off')
+            plt.savefig('./test2.jpg')
+            plt.show()
             if cross_entropy < min_loss:
                     min_loss = cross_entropy
                     print('保存参数 ')
