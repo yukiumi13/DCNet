@@ -1,7 +1,4 @@
 import numpy as np
-from numpy.core.fromnumeric import shape
-import torch
-import cv2
 '''
 for file in os.listdir('../SrcData/Sample'):
     try:
@@ -64,5 +61,5 @@ print(c.shape)
 '''
 sample = np.load('../npys/HKU-IS/IMG/sample/sample.npy')
 label = np.load('../npys/HKU-IS/IMG/label/label.npy')
-sample = torch.tensor(sample)
-label = torch.tensor(label)
+sample = sample[1,:,:,:]
+label = label[1,:,:,:]
