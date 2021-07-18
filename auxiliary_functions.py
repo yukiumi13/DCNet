@@ -16,7 +16,7 @@ class single_salicency_model(nn.Module):
         super(single_salicency_model, self).__init__()
         self.drop_rate = drop_rate
         self.layers = layers
-        self.conv2d = conv2d(in_features=1, out_features=16, kernel_size=3)
+        self.conv2d = conv2d(in_features=3, out_features=16, kernel_size=3)
         #block1 256*256 d=1
         self.block1 = block(layers=12, dilated_rate=1, drop_rate=self.drop_rate)
         self.conv2d1 = conv2d(in_features=160, out_features=16, kernel_size=3)
