@@ -73,13 +73,15 @@ class ImageDataset_pred(Dataset):
 
 def images_preprocessing(images):
 
-    images[2, :, :] -= torch.mean(images[2,:,:])
-    images[1, :, :] -= torch.mean(images[1,:,:])
-    images[0, :, :] -= torch.mean(images[0,:,:])
+    if images.shape[0]==3:
+        images[2, :, :] -= torch.mean(images[2,:,:])
+        images[1, :, :] -= torch.mean(images[1,:,:])
+        images[0, :, :] -= torch.mean(images[0,:,:])
 
-    images[2, :, :] /= ( torch.std(images[2,:,:], unbiased=False) + 1e-12)
-    images[1, :, :] /= ( torch.std(images[1,:,:], unbiased=False) + 1e-12)
-    images[0, :, :] /= ( torch.std(images[0,:,:], unbiased=False) + 1e-12)
-
-
+        images[2, :, :] /= ( torch.std(images[2,:,:], unbiased=False) + 1e-12)
+        images[1, :, :] /= ( torch.std(images[1,:,:], unbiased=False) + 1e-12)
+        images[0, :, :] /= ( torch.std(images[0,:,:], unbiased=False) + 1e-12)
+    else:
+        images[0, :, :] -= torch.mean(images[0,:,:])
+        images[0, :, :] /= ( torch.std(images[0,:,:], unbiased=False) + 1e-12) 
     return images
