@@ -1,3 +1,13 @@
+# -*-coding:utf-8 -*-
+'''
+@File    :   nii2npy.py
+@Time    :   2021/07/19 17:32:22
+@Author  :   Li Yang 
+@Version :   1.0
+@Contact :   liyang259@mail2.sysu.edu.cn
+@License :   (C)Copyright 2020-2021, Li Yang
+@Desc    :   None
+'''
 
 '该模块将指定路径的MRI图像(nii.gz格式)与标签通过Crop、Pad操作reszie到设定大小并将sample和label分别合并为两个npy数组并保存到指定路径.'
 

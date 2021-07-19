@@ -50,7 +50,6 @@ def train(data):
             ls643 = ls643[0,:,:,:]
             ls643_1 = torch.squeeze(ls643)
             ls643_2 = trans(ls643_1)
-            print(np.any(np.isnan(ls643.detach().numpy())))
             plt.imshow(ls643_2)
             plt.axis('off')
             plt.savefig('./test2.jpg')
