@@ -56,7 +56,6 @@ def data_process_img(path, content):
         img = cv2.imread(img_path) # cv2.imread是按照BGR的顺序读的图像
         b, g, r = cv2.split(img)
         img = cv2.merge([r, g, b])
-
         # img[1:20, 1:77, :] = 30
         # img[1:22, 279:384, :] = 30
         # img[360:384, 1:93, :] = 30
@@ -88,7 +87,7 @@ def data_process_mask(path, content):
         img = cv2.resize(img, (256, 256))
 
         # 插值后会有数据变得不是0和1, 下面进行二值化
-        _, img = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)
+        _, img = cv2.threshold(img, 127, 1, cv2.THRESH_BINARY)
         # io.imshow(img)
         # io.show()
         imgs.append(img)

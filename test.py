@@ -59,7 +59,8 @@ print(b.shape)
 c = np.stack(c)
 print(c.shape)
 '''
-sample = np.load('../npys/HKU-IS/IMG/sample/sample.npy')
-label = np.load('../npys/HKU-IS/IMG/label/label.npy')
-sample = sample[1,:,:,:]
-label = label[1,:,:,:]
+dataset = 'NPC-seg'
+sample = np.load('../npys/'+dataset+'/IMG/sample/sample.npy')
+label = np.load('../npys/'+dataset+'/IMG/label/label.npy')
+print(np.mean(label))
+
