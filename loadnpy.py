@@ -35,8 +35,9 @@ class ImageDataset(Dataset):
         image = image[index, :, :, :]
         image = images_preprocessing(image)
         '''
-
-    
+        if image.shape[0] == 1:
+            image = torch.cat((image, image, image),0)
+        
         label = np.array(self.label, dtype=np.float32)
         label = label[index, :, :, :]
         label = np.squeeze(label)
