@@ -26,7 +26,7 @@ def train(data):
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, [25, 30], 0.1)
     # lrdecay管理器
     min_loss = 10
-    for epoch in range(40):
+    for epoch in range(80):
         for i, (imagedata, labeldata) in enumerate(data):
             xs = imagedata.cuda()
             ys = labeldata.cuda()
