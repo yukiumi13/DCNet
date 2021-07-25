@@ -26,7 +26,7 @@ def train(data):
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, [25, 30], 0.1)
     # lrdecay管理器
     min_loss = 10
-    for epoch in range(200):
+    for epoch in range(30):
         for i, (imagedata, labeldata) in enumerate(data):
             xs = imagedata.cuda()
             ys = labeldata.cuda()
@@ -50,9 +50,9 @@ def train(data):
             ls643 = ls643[0,:,:,:]
             ls643_1 = torch.squeeze(ls643)
             ls643_2 = trans(ls643_1)
-            plt.imshow(ls643_2)
+            plt.imshow(ls643_2, cmap='gray')
             plt.axis('off')
-            plt.savefig('./test2.jpg')
+            plt.savefig('./currentSeg.jpg')
             plt.show()
             if cross_entropy < min_loss:
                     min_loss = cross_entropy
@@ -62,13 +62,11 @@ def train(data):
                 print('保存loss')
                 torch.save({'epoch': epoch + 1, 'cross_loss': cross_entropy, 'mae': MAE, 'dice': dice_yp},
                        "./loss/" + "loss" + str(epoch) + '_' + str(i) + ".pth")
-                print('保存参数 ')
-                torch.save(ssm.state_dict(), "./parameters/" +  str(epoch) + '_' + str(i) + ".pth")
             optimizer.zero_grad()
             cross_entropy.backward()
             optimizer.step()
 
-            print('epoch=', epoch, "sampleNo.=", i, 'cross_entropy=', cross_entropy, 'mae=', MAE, 'prec=', prec, 'recall=', recall,
+            print('epoch=', epoch, "sampleNo.=", i, 'minloss=', min_loss,  'cross_entropy=', cross_entropy, 'mae=', MAE, 'prec=', prec, 'recall=', recall,
                   'fscore=', F_score, 'dice=', dice_yp)
     scheduler.step()
 
