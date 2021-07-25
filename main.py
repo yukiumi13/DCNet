@@ -39,7 +39,9 @@ def train(data):
             yp, logits_scale_64_3_upsampled_to_256_sigmoid, logits_scale_64_2_upsampled_to_256_sigmoid, logits_scale_64_1_upsampled_to_256_sigmoid, logits_scale_128_upsampled_to_256_sigmoid, logits_scale_256_upsampled_to_256_sigmoid = ssm(xs)
             # 二值化
             mask = torch.ones(cg.image_size,cg.image_size)
+            mask = mask.cuda()
             background = torch.zeros(cg.image_size,cg.image_size)
+            background=background.cuda()
             _,yp =  torch.where(yp>0.5, mask, background)
             _,logits_scale_64_3_upsampled_to_256_sigmoid =  torch.where(logits_scale_64_3_upsampled_to_256_sigmoid>0.5, mask, background)
             _,logits_scale_64_2_upsampled_to_256_sigmoid =  torch.where(logits_scale_64_2_upsampled_to_256_sigmoid>0.5, mask, background)
