@@ -11,6 +11,7 @@ from loadnpy import ImageDataset
 import matplotlib.pyplot as plt
 import torchvision
 import torch
+import cv2
 #log_dir = cg.root_path + "/log"
 
 def train(data):
@@ -36,6 +37,13 @@ def train(data):
 
             ysc = ys
             yp, logits_scale_64_3_upsampled_to_256_sigmoid, logits_scale_64_2_upsampled_to_256_sigmoid, logits_scale_64_1_upsampled_to_256_sigmoid, logits_scale_128_upsampled_to_256_sigmoid, logits_scale_256_upsampled_to_256_sigmoid = ssm(xs)
+            # 二值化
+            yp =  cv2.threshold(yp,0, 0.5, 1, cv2.THRESH_BINARY)
+            logits_scale_64_3_upsampled_to_256_sigmoid =  cv2.threshold(logits_scale_64_3_upsampled_to_256_sigmoid,0, 0.5, 1, cv2.THRESH_BINARY)
+            logits_scale_64_2_upsampled_to_256_sigmoid =  cv2.threshold(logits_scale_64_2_upsampled_to_256_sigmoid,0, 0.5, 1, cv2.THRESH_BINARY)
+            logits_scale_64_1_upsampled_to_256_sigmoid, =  cv2.threshold(logits_scale_64_1_upsampled_to_256_sigmoid,0,0.5, 1, cv2.THRESH_BINARY)
+            logits_scale_128_upsampled_to_256_sigmoid =  cv2.threshold(logits_scale_128_upsampled_to_256_sigmoid,0,0.5, 1, cv2.THRESH_BINARY)
+            logits_scale_256_upsampled_to_256_sigmoid =  cv2.threshold(logits_scale_256_upsampled_to_256_sigmoid,0,0.5, 1, cv2.THRESH_BINARY)
             loss_64_3 , dice_64_3 = fused_loss(logits_scale_64_3_upsampled_to_256_sigmoid, ysc)
             loss_64_2 , dice_64_2 = fused_loss(logits_scale_64_2_upsampled_to_256_sigmoid, ysc)
             loss_64_1 , dice_64_1 = fused_loss(logits_scale_64_1_upsampled_to_256_sigmoid, ysc)
