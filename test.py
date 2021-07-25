@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 '''
 for file in os.listdir('../SrcData/Sample'):
     try:
@@ -58,9 +59,14 @@ c.append(b)
 print(b.shape)
 c = np.stack(c)
 print(c.shape)
-'''
 dataset = 'NPC-seg'
 sample = np.load('../npys/'+dataset+'/IMG/sample/sample.npy')
 label = np.load('../npys/'+dataset+'/IMG/label/label.npy')
 print(np.mean(label))
-
+'''
+a = torch.randn(2,3)
+c = torch.ones(2,3)
+d = torch.zeros(2,3)
+b = torch.where(a>0.5, c, d)
+print(b.dtype)
+print(a.dtype)
