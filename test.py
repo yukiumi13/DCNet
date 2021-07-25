@@ -58,9 +58,12 @@ c.append(b)
 print(b.shape)
 c = np.stack(c)
 print(c.shape)
-'''
+
 dataset = 'NPC-seg'
 sample = np.load('../npys/'+dataset+'/IMG/sample/sample.npy')
 label = np.load('../npys/'+dataset+'/IMG/label/label.npy')
 print(np.mean(label))
-
+'''
+import cv2
+a = np.random.randn(256,256)
+b = cv2.threshold(a,0.5,1,cv2.THRESH_BINARY)
