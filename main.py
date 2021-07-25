@@ -45,7 +45,7 @@ def train(data):
             yp =  torch.where(yp>0.5, mask, background)
             logits_scale_64_3_upsampled_to_256_sigmoid =  torch.where(logits_scale_64_3_upsampled_to_256_sigmoid>0.5, mask, background)
             logits_scale_64_2_upsampled_to_256_sigmoid =  torch.where(logits_scale_64_2_upsampled_to_256_sigmoid>0.5, mask, background)
-            logits_scale_64_1_upsampled_to_256_sigmoid, =  torch.where(logits_scale_64_1_upsampled_to_256_sigmoid>0.5,mask, background)
+            logits_scale_64_1_upsampled_to_256_sigmoid =  torch.where(logits_scale_64_1_upsampled_to_256_sigmoid>0.5,mask, background)
             logits_scale_128_upsampled_to_256_sigmoid =  torch.where(logits_scale_128_upsampled_to_256_sigmoid>0.5,mask, background)
             logits_scale_256_upsampled_to_256_sigmoid =  torch.where(logits_scale_256_upsampled_to_256_sigmoid>0.5,mask, background)
             loss_64_3 , dice_64_3 = fused_loss(logits_scale_64_3_upsampled_to_256_sigmoid, ysc)
