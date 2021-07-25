@@ -40,7 +40,7 @@ def train(data):
             # 二值化
             mask = torch.ones(cg.image_size,cg.image_size)
             background = torch.zeros(cg.image_size,cg.image_size)
-            _,yp =  torch.where(yp>0.5, 1, 0)
+            _,yp =  torch.where(yp>0.5, mask, background)
             _,logits_scale_64_3_upsampled_to_256_sigmoid =  torch.where(logits_scale_64_3_upsampled_to_256_sigmoid>0.5, mask, background)
             _,logits_scale_64_2_upsampled_to_256_sigmoid =  torch.where(logits_scale_64_2_upsampled_to_256_sigmoid>0.5, mask, background)
             _,logits_scale_64_1_upsampled_to_256_sigmoid, =  torch.where(logits_scale_64_1_upsampled_to_256_sigmoid>0.5,mask, background)
