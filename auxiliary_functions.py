@@ -141,6 +141,7 @@ class single_salicency_model(nn.Module):
         logits = self.convlast(logits_concat)
         logits = self.convlast2(logits)
         yp = torch.sigmoid(logits)
+        yp = self.biThreshold(yp)
         return yp, logits_scale_64_3_upsampled_to_256_sigmoid, logits_scale_64_2_upsampled_to_256_sigmoid, logits_scale_64_1_upsampled_to_256_sigmoid, logits_scale_128_upsampled_to_256_sigmoid, logits_scale_256_upsampled_to_256_sigmoid
 
 
@@ -330,3 +331,15 @@ def F_measure(gt, map):
     F_score = (1 + beta_square) * prec * recall / (beta_square * prec + recall + 1e-32)
     return  prec, recall, F_score
 
+def dice_cal(yp, gt):
+    mask_front = gt
+    mask_background = 1 - gt
+    pro_front = yp
+    pro_background = 1 - yp
+
+    w1 = 1 / (torch.pow(torch.sum(mask_front), 2) + 1e-12).item()
+    w2 = 1 / (torch.pow(torch.sum(mask_background), 2) + 1e-12).item()
+    numerator = w1 * torch.sum(mask_front * pro_front) + w2 * torch.sum(mask_background * pro_background)
+    denominator = w1 * torch.sum(mask_front + pro_front) + w2 * torch.sum(mask_background + pro_background)
+    dice = 2 * numerator / (denominator + 1e-12)
+    return dice

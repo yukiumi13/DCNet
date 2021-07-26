@@ -1,4 +1,15 @@
 #coding=utf-8#
+# -*-coding:utf-8 -*-
+'''
+@File    :   main.py
+@Time    :   2021/07/27 01:26:58
+@Author  :   Li Yang 
+@Version :   1.0
+@Contact :   liyang259@mail2.sysu.edu.cn
+@License :   (C)Copyright 2020-2021, Li Yang
+@Desc    :   None
+'''
+
 import numpy as np
 from config import Config as cg
 import os
@@ -34,20 +45,8 @@ def train(data):
             xs1 = xs.clone().cpu()
             ys1 = ys.clone().cpu()
             trans = torchvision.transforms.ToPILImage()
-
             ysc = ys
             yp, logits_scale_64_3_upsampled_to_256_sigmoid, logits_scale_64_2_upsampled_to_256_sigmoid, logits_scale_64_1_upsampled_to_256_sigmoid, logits_scale_128_upsampled_to_256_sigmoid, logits_scale_256_upsampled_to_256_sigmoid = ssm(xs)
-            # 二值化
-            mask = torch.ones(cg.image_size,cg.image_size)
-            mask = mask.cuda()
-            background = torch.zeros(cg.image_size,cg.image_size)
-            background=background.cuda()
-            yp =  torch.where(yp>0.5, mask, background)
-            logits_scale_64_3_upsampled_to_256_sigmoid =  torch.where(logits_scale_64_3_upsampled_to_256_sigmoid>0.5, mask, background)
-            logits_scale_64_2_upsampled_to_256_sigmoid =  torch.where(logits_scale_64_2_upsampled_to_256_sigmoid>0.5, mask, background)
-            logits_scale_64_1_upsampled_to_256_sigmoid =  torch.where(logits_scale_64_1_upsampled_to_256_sigmoid>0.5,mask, background)
-            logits_scale_128_upsampled_to_256_sigmoid =  torch.where(logits_scale_128_upsampled_to_256_sigmoid>0.5,mask, background)
-            logits_scale_256_upsampled_to_256_sigmoid =  torch.where(logits_scale_256_upsampled_to_256_sigmoid>0.5,mask, background)
             loss_64_3 , dice_64_3 = fused_loss(logits_scale_64_3_upsampled_to_256_sigmoid, ysc)
             loss_64_2 , dice_64_2 = fused_loss(logits_scale_64_2_upsampled_to_256_sigmoid, ysc)
             loss_64_1 , dice_64_1 = fused_loss(logits_scale_64_1_upsampled_to_256_sigmoid, ysc)
@@ -58,7 +57,11 @@ def train(data):
             MAE = torch.mean(torch.abs(yp - ysc))
             prec, recall, F_score = F_measure(ysc, yp)
             # if i == 0:
-            ls643 = yp.clone().cpu()
+            mask=torch.ones(cg.image_size,cg.image_size)
+            background = torch.zeros(cg.image_size,cg.image_size)
+            yp_threshold = torch.where(yp>0.5, mask, background)
+            dice = dice_cal(yp_threshold, torch.gt)
+            ls643 = yp_threshold.clone().cpu()
             ls643 = ls643[0,:,:,:]
             ls643_1 = torch.squeeze(ls643)
             ls643_2 = trans(ls643_1)
@@ -72,14 +75,14 @@ def train(data):
                     torch.save(ssm.state_dict(), "./parameters/" +  str(epoch) + '_' + str(i) + ".pth")
             if i % 50 == 0:
                 print('保存loss')
-                torch.save({'epoch': epoch + 1, 'cross_loss': cross_entropy, 'mae': MAE, 'dice': dice_yp},
+                torch.save({'epoch': epoch + 1, 'cross_loss': cross_entropy, 'mae': MAE, 'dice': dice},
                        "./loss/" + "loss" + str(epoch) + '_' + str(i) + ".pth")
             optimizer.zero_grad()
             cross_entropy.backward()
             optimizer.step()
 
             print('epoch=', epoch, "sampleNo.=", i, 'minloss=', min_loss,  'cross_entropy=', cross_entropy, 'mae=', MAE, 'prec=', prec, 'recall=', recall,
-                  'fscore=', F_score, 'dice=', dice_yp)
+                  'fscore=', F_score, 'dice=', dice)
     scheduler.step()
 
 
