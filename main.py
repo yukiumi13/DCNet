@@ -57,10 +57,10 @@ def train(data):
             MAE = torch.mean(torch.abs(yp - ysc))
             prec, recall, F_score = F_measure(ysc, yp)
             # if i == 0:
-            mask=torch.ones(cg.image_size,cg.image_size)
+            mask=torch.ones(cg.image_size,cg.image_size).cuda()
             background = torch.zeros(cg.image_size,cg.image_size).cuda()
-            yp_threshold = torch.where(yp>0.5, mask, background).cuda()
-            dice = dice_cal(yp_threshold, torch.gt)
+            yp_threshold = torch.where(yp>0.5, mask, background)
+            dice = dice_cal(yp_threshold, ys)
             ls643 = yp_threshold.clone().cpu()
             ls643 = ls643[0,:,:,:]
             ls643_1 = torch.squeeze(ls643)
