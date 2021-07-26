@@ -59,7 +59,7 @@ def train(data):
             # if i == 0:
             mask=torch.ones(cg.image_size,cg.image_size).cuda()
             background = torch.zeros(cg.image_size,cg.image_size).cuda()
-            yp_threshold = torch.where(yp>0.5, mask, background)
+            yp_threshold = torch.where(yp>0.3, mask, background)
             dice = diceCal(yp_threshold, ys)
             ls643 = yp_threshold.clone().cpu()
             ls643 = ls643[0,:,:,:]
