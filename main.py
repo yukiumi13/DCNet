@@ -58,8 +58,8 @@ def train(data):
             prec, recall, F_score = F_measure(ysc, yp)
             # if i == 0:
             mask=torch.ones(cg.image_size,cg.image_size)
-            background = torch.zeros(cg.image_size,cg.image_size)
-            yp_threshold = torch.where(yp>0.5, mask, background)
+            background = torch.zeros(cg.image_size,cg.image_size).cuda()
+            yp_threshold = torch.where(yp>0.5, mask, background).cuda()
             dice = dice_cal(yp_threshold, torch.gt)
             ls643 = yp_threshold.clone().cpu()
             ls643 = ls643[0,:,:,:]
