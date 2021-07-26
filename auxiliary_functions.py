@@ -141,7 +141,6 @@ class single_salicency_model(nn.Module):
         logits = self.convlast(logits_concat)
         logits = self.convlast2(logits)
         yp = torch.sigmoid(logits)
-        yp = self.biThreshold(yp)
         return yp, logits_scale_64_3_upsampled_to_256_sigmoid, logits_scale_64_2_upsampled_to_256_sigmoid, logits_scale_64_1_upsampled_to_256_sigmoid, logits_scale_128_upsampled_to_256_sigmoid, logits_scale_256_upsampled_to_256_sigmoid
 
 
