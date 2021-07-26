@@ -330,7 +330,7 @@ def F_measure(gt, map):
     F_score = (1 + beta_square) * prec * recall / (beta_square * prec + recall + 1e-32)
     return  prec, recall, F_score
 
-def dice_cal(yp, gt):
+def diceCal(yp, gt):
     mask_front = gt
     mask_background = 1 - gt
     pro_front = yp
