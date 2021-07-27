@@ -69,6 +69,15 @@ def train(data):
             plt.axis('off')
             plt.savefig('./currentSeg.jpg')
             plt.show()
+            ls644 = ys.clone().cpu()
+            ls644 = ls644[0,:,:,:]
+            ls644_1 = torch.squeeze(ls644)
+            ls644_2 = trans(ls644_1)
+            plt.imshow(ls644_2, cmap='gray')
+            plt.axis('off')
+            plt.savefig('./currentSegTruth.jpg')
+            plt.show()
+             
             if cross_entropy < min_loss:
                     min_loss = cross_entropy
                     print('保存参数 ')
