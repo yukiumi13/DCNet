@@ -70,7 +70,6 @@ def train(data):
             plt.savefig('./currentSeg.jpg')
             plt.show()
             ls644 = ys.clone().cpu()
-            ls644 = ls644[0,:,:,:]
             ls644_1 = torch.squeeze(ls644)
             ls644_2 = trans(ls644_1)
             plt.imshow(ls644_2, cmap='gray')
