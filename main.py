@@ -138,7 +138,7 @@ def test(data):
             plt.show()
             print('Test','Cross Entropy=', cross_entropy , 'MAE=', MAE, 'Fscore=', F_score)
 
-mod = 'test'
+mod = 'train'
 
 if __name__ == '__main__':
     
