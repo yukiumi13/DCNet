@@ -3,9 +3,9 @@
 ####################################
 import torch, torchvision
 from collections import OrderedDict
-dict = torch.load('bmvc_cv.pth')
+dict = torch.load('bmvc_cv.pth',map_location=torch.device('cpu'))
 new_dict = OrderedDict()
-for k, v in OrderedDict.items():
+for k, v in new_dict.items():
     name = k[7:]
     new_dict[name] = v
 torch.save(new_dict,'bmvc_cv_single.pth')
