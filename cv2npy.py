@@ -13,6 +13,8 @@ def main():
     datasetName = 'HKU-IS'
     imgPath = dataRoot + '/' + datasetName + '/' + 'img'
     imgFiles = os.listdir(imgPath)
+    # 取测试集
+    imgFiles = imgFiles[0:99]
     img = data_process_img(imgPath, imgFiles)
     print('img shape is ' + str(img.shape))
     '''若img格式为jpg
