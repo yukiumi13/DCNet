@@ -100,9 +100,9 @@ def train(data):
 def test(data):
 
     ssm = single_salicency_model(drop_rate=0.2, layers=12)
-    ssm = torch.nn.DataParallel(ssm)
+    # ssm = torch.nn.DataParallel(ssm)
     ssm.cuda()
-    # ssm.load_state_dict(torch.load('/home/fengtianyuan/ma_2_162.pth'))
+    ssm.load_state_dict(torch.load('bmvc.pth'))
     ssm.eval()
     trans = torchvision.transforms.ToPILImage()
     for epoch in range(1):
