@@ -131,11 +131,9 @@ def test(data):
             plt.subplot(1,2,1)
             plt.imshow(ls643_2, cmap='gray')
             plt.axis('off')
-            plt.savefig('./currentSeg.jpg')
             plt.subplot(1,2,2)
             plt.imshow(ls644_2, cmap='gray')
             plt.axis('off')
-            plt.savefig('./currentSegTruth.jpg')
             plt.show()
             print('Test','Cross Entropy=', cross_entropy , 'MAE=', MAE, 'Fscore=', F_score)
 
