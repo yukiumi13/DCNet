@@ -55,7 +55,6 @@ def train(data):
             cross_entropy = loss_yp + loss_64_3 + loss_64_2 + loss_64_1 + loss_128 + loss_256
             MAE = torch.mean(torch.abs(yp - ysc))
             prec, recall, F_score = F_measure(ysc, yp)
-            # if i == 0:
             mask=torch.ones(cg.image_size,cg.image_size).cuda()
             background = torch.zeros(cg.image_size,cg.image_size).cuda()
             yp_threshold = torch.where(yp>0.3, mask, background)
