@@ -112,7 +112,7 @@ def test(data):
             xs)
 
             loss_64_3, dice_64_3 = fused_loss(logits_scale_64_3_upsampled_to_256_sigmoid, ysc)
-            loss_64_2,dice_64_2 = fused_loss(logits_scale_64_2_upsampled_to_256_sigmoid, ysc)
+            loss_64_2,ice_64_2 = fused_loss(logits_scale_64_2_upsampled_to_256_sigmoid, ysc)
             loss_64_1,dice_64_1= fused_loss(logits_scale_64_1_upsampled_to_256_sigmoid, ysc)
             loss_128,dice_128= fused_loss(logits_scale_128_upsampled_to_256_sigmoid, ysc)
             loss_256,dice_256 = fused_loss(logits_scale_256_upsampled_to_256_sigmoid, ysc)
@@ -138,13 +138,22 @@ def test(data):
             plt.show()
             print('Test','Cross Entropy=', cross_entropy , 'MAE=', MAE, 'Fscore=', F_score)
 
-
+mod = 'test'
 
 if __name__ == '__main__':
-    # os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
-    samplePath = os.listdir('../IMG/sample')
-    labelPath = os.listdir('../IMG/label')
-    data1 = ImageDataset('../IMG/sample/' + samplePath[0], '../IMG/label/' + labelPath[0])
-    data = DataLoader(data1, batch_size=4, shuffle=True, pin_memory=False)
-    train(data)
-    # test(data)
+    
+    if mod == 'train': 
+        # os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
+        samplePath = os.listdir('../IMG/sample')
+        labelPath = os.listdir('../IMG/label')
+        data1 = ImageDataset('../IMG/sample/' + samplePath[0], '../IMG/label/' + labelPath[0])
+        data = DataLoader(data1, batch_size=4, shuffle=True, pin_memory=False)
+        train(data)
+        # test(data)
+
+    if mod == 'test':
+        samplePath = os.listdir('../testset/sample')
+        labelPath = os.listdir('../testset/label')
+        data1 = ImageDataset('../testset/sample/' + samplePath[0], '../testset/label/' + labelPath[0])
+        data = DataLoader(data1, batch_size=1, shuffle=True, pin_memory=False)
+        test(data)
