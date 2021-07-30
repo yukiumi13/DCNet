@@ -100,10 +100,11 @@ def train(data):
 def test(data):
 
     ssm = single_salicency_model(drop_rate=0.2, layers=12)
-    ssm = torch.nn.DataParallel(ssm, device_ids=[0, 1])
+    ssm = torch.nn.DataParallel(ssm)
     ssm.cuda()
     # ssm.load_state_dict(torch.load('/home/fengtianyuan/ma_2_162.pth'))
     ssm.eval()
+    trans = torchvision.transforms.ToPILImage()
     for epoch in range(1):
         for i, (imagedata, labeldata) in enumerate(data):
             xs = imagedata.cuda()
@@ -121,6 +122,23 @@ def test(data):
             cross_entropy = loss_yp + loss_64_3 + loss_64_2 + loss_64_1 + loss_128 + loss_256
             MAE = torch.mean(torch.abs(yp - ysc))
             prec, recall, F_score = F_measure(ysc, yp)
+            ls643 = yp.clone().cpu()
+            ls643 = ls643[0,:,:,:]
+            ls643_1 = torch.squeeze(ls643)
+            ls643_2 = trans(ls643_1)
+            ls644 = ys.clone().cpu()
+            ls644_1 = torch.squeeze(ls644)
+            ls644_2 = trans(ls644_1)
+            plt.figure()
+            plt.subplot(1,2,1)
+            plt.imshow(ls643_2, cmap='gray')
+            plt.axis('off')
+            plt.savefig('./currentSeg.jpg')
+            plt.subplot(1,2,2)
+            plt.imshow(ls644_2, cmap='gray')
+            plt.axis('off')
+            plt.savefig('./currentSegTruth.jpg')
+            plt.show(
             print('Test','Cross Entropy=', cross_entropy , 'MAE=', MAE, 'Fscore=', F_score)
 
 
