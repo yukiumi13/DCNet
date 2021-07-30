@@ -100,7 +100,7 @@ def test(data):
 
     ssm = single_salicency_model(drop_rate=0.2, layers=12)
     ssm.cuda()
-    ssm.load_state_dict(torch.load('bmvc.pth'))
+    ssm.load_state_dict(torch.load('bmvc_cv_single.pth'))
     ssm.eval()
     trans = torchvision.transforms.ToPILImage()
     for epoch in range(1):
