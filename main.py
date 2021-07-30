@@ -12,9 +12,9 @@
 import numpy as np
 from config import Config as cg
 import os
-# os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3" 选择计算卡
+# os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
 import sys
-# sys.path.append('/home/fengtianyuan/code2') # 添加搜索目录
+# sys.path.append('/home/fengtianyuan/code2')
 from auxiliary_functions import *
 from torch.utils.data import Dataset, DataLoader
 from loadnpy import ImageDataset
