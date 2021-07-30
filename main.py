@@ -111,12 +111,12 @@ def test(data):
             yp, logits_scale_64_3_upsampled_to_256_sigmoid, logits_scale_64_2_upsampled_to_256_sigmoid, logits_scale_64_1_upsampled_to_256_sigmoid, logits_scale_128_upsampled_to_256_sigmoid, logits_scale_256_upsampled_to_256_sigmoid = ssm(
             xs)
 
-            loss_64_3,_ = fused_loss(logits_scale_64_3_upsampled_to_256_sigmoid, ysc)
-            loss_64_2,_ = fused_loss(logits_scale_64_2_upsampled_to_256_sigmoid, ysc)
-            loss_64_1,_ = fused_loss(logits_scale_64_1_upsampled_to_256_sigmoid, ysc)
-            loss_128,_ = fused_loss(logits_scale_128_upsampled_to_256_sigmoid, ysc)
-            loss_256,_ = fused_loss(logits_scale_256_upsampled_to_256_sigmoid, ysc)
-            loss_yp,_ = fused_loss(yp, ysc)
+            loss_64_3, dice_64_3 = fused_loss(logits_scale_64_3_upsampled_to_256_sigmoid, ysc)
+            loss_64_2,dice_64_2 = fused_loss(logits_scale_64_2_upsampled_to_256_sigmoid, ysc)
+            loss_64_1,dice_64_1= fused_loss(logits_scale_64_1_upsampled_to_256_sigmoid, ysc)
+            loss_128,dice_128= fused_loss(logits_scale_128_upsampled_to_256_sigmoid, ysc)
+            loss_256,dice_256 = fused_loss(logits_scale_256_upsampled_to_256_sigmoid, ysc)
+            loss_yp,dice_yp = fused_loss(yp, ysc)
             cross_entropy = loss_yp + loss_64_3 + loss_64_2 + loss_64_1 + loss_128 + loss_256
             MAE = torch.mean(torch.abs(yp - ysc))
             prec, recall, F_score = F_measure(ysc, yp)
