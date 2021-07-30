@@ -142,6 +142,7 @@ def test(data):
             print('Test','Cross Entropy=', cross_entropy , 'MAE=', MAE, 'Fscore=', F_score)
 
 
+
 if __name__ == '__main__':
     # os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
     samplePath = os.listdir('../IMG/sample')
