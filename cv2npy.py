@@ -1,4 +1,4 @@
-#coding=utf-8#
+#coding=utf-8
 from skimage import io
 import numpy as np
 import os
