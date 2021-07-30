@@ -138,7 +138,7 @@ def test(data):
             plt.imshow(ls644_2, cmap='gray')
             plt.axis('off')
             plt.savefig('./currentSegTruth.jpg')
-            plt.show(
+            plt.show()
             print('Test','Cross Entropy=', cross_entropy , 'MAE=', MAE, 'Fscore=', F_score)
 
 
