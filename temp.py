@@ -1,6 +1,4 @@
 import numpy as np
 import torch
-def test():
-    return 1,2
-a=test()
-print(a.type)
+a = torch.load('bmvc_cv.pth',map_location = torch.device('cpu'))
+b = torch.load('bmvc_cv_single.pth',map_location = torch.device('cpu'))
