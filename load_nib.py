@@ -9,7 +9,7 @@
 @Desc    :   None
 '''
 
-'该模块将指定路径的MRI图像(nii.gz格式)与标签通过Crop、Pad操作reszie到设定大小并将sample和label分别合并为两个npy数组并保存到指定路径.'
+'该模块将指定路径的MRI图像(nii.gz格式)与标签Resample并reszie到设定大小并将sample和label分别合并为两个npy数组并保存到指定路径.'
 
 from numpy.core.arrayprint import dtype_is_implied
 from config import Config as cg
