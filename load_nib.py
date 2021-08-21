@@ -14,7 +14,9 @@
 from numpy.core.arrayprint import dtype_is_implied
 from config import Config as cg
 import nibabel as nib
+import nibabel.processing as proc
 import numpy as np
+import matplotlib.pyplot as plt
 import sys, getopt, os
 import time
 import math
@@ -74,93 +76,83 @@ def main(Args):
 
     sampleFile = os.listdir(inputfolder + '/' + sampleFolder)
     # labelFile = os.listdir(inputfolder + '/' + labelFolder) 由于随机性，故不可以直接读取
-    labelFile = []
-    for strs in sampleFile:
-        if strs == '.DS_Store':
-            pass #隐藏文件
-        else:
-            labelName = re.sub(r'sample', 'mask-', strs)
-            labelFile.append(labelName)
-
 
     if os.path.exists(outputfolder + '/' + 'sample'):
         pass 
     else: 
-        print("Created ouput directory: " + outputfolder + 'sample')
+        print("Created ouput directory: " + outputfolder +'/' + 'sample')
         os.mkdir(outputfolder + '/' + 'sample')
     
     if os.path.exists(outputfolder + '/' + 'label'):
         pass 
     else: 
-        print("Created ouput directory: " + outputfolder + 'label')
+        print("Created ouput directory: " + outputfolder + '/' + 'label')
         os.mkdir(outputfolder + '/' + 'label')
     
 
     
-    sample = np.zeros([cg.image_size,cg.image_size, 1], dtype = np.uint16)
-    label = np.zeros([cg.image_size,cg.image_size, 1], dtype = np.uint16)
+    sample_a = np.zeros([cg.image_size,cg.image_size, 1], dtype = np.uint16)
+    label_a = np.zeros([cg.image_size,cg.image_size, 1], dtype = np.uint16)
 
     print('Load samples')
 
-    shape = []
+# Convert to numpy & data augmentation
     
     for file in sampleFile:
-        try:
-            sampleArray = nib.load(inputfolder + '/' + sampleFolder + '/' + file).get_fdata()
-            shape.append(sampleArray.shape)
-            if sampleArray.shape == cg.image_size:
+        labelName = re.sub(r'sample', 'mask-', file)
+        sample = nib.load(inputfolder + '/' + sampleFolder + '/' + file)
+        label = nib.load(inputfolder + '/' + labelFolder + '/' + labelName)
+        slice_shape = sample.shape
+        shape = [256,256,slice_shape[2]]
+        print(file+' with a size of '+ str(slice_shape) + ' loaded')
+        print('========================================================')
+        print('Data Cleaning')
+        print('========================================================')
+        img_array = sample.get_fdata()
+        label_array = label.get_fdata()
+        idx=[]
+        for i in range(0,slice_shape[2]):
+            if np.max(img_array[:,:,i])== 0:
+                pass
+            elif np.max(label_array[:,:,i]) == 0:
                 pass
             else:
-                print(file + ' ' + 'size:' + str(sampleArray.shape))
-                sampleArray = resize(sampleArray, cg.image_size)
-                print(file + ' ' + 'Resized:' + str(sampleArray.shape))
-            print(sampleArray.shape)
-            sample = np.concatenate((sample,sampleArray), axis=2)
-            print(file + ' loaded & appended.')
-        except nib.filebasedimages.ImageFileError :
-            pass
-        # 防止隐藏文件
-
-    cout = 0
+                idx.append(i)
+        img_resampled = proc.conform(sample, out_shape=shape, voxel_size=[1,1,sample.header['pixdim'][3]])
+        img_resampled_array = img_resampled.get_fdata()
+        label_resampled = proc.conform(label,out_shape=shape, voxel_size=[1,1,label.header['pixdim'][3]])
+        label_resampled_array = label_resampled.get_fdata()
+        img_s = img_resampled_array[:,:,idx]
+        label_s = label_resampled_array[:,:,idx]
+        for i in range(0,len(idx)):
+            img2show = img_s[:,:,i]
+            label2show = label_s[:,:,i]
+            plt.figure()
+            plt.subplot(1,2,1)
+            plt.imshow(img2show, cmap="gray")
+            plt.title('sample')
+            plt.subplot(1,2,2)
+            plt.imshow(label2show, cmap="gray")
+            plt.title('label')
+        print(str(len(idx)) + ' out of ' + str(slice_shape[2]) + ' selected.')
+        sample_a = np.concatenate((sample_a,img_s), axis=2)
+        label_a = np.concatenate((label_a,label_s), axis=2)
+        print(file + ' loaded & appended.')
+        print('========================================================')
     
-    for file in labelFile:
-        try:
-            labelArray = nib.load(inputfolder + '/' + labelFolder + '/' + file).get_fdata()
-            
-            if shape[cout] == labelArray.shape:
-                pass
-            else: 
-                print(file + '\'s shape doesn\'t match.')
-                print('sample size:' + str(shape[cout]))
-                print('label size:' + str(labelArray.shape))
-                raise AssertionError('Shape doesn\'t match')
-            
-            if labelArray.shape[:2]== (cg.image_size, cg.image_size):
-                pass
-            else:
-               print(file + ' ' + 'size:' + str(labelArray.shape))
-               labelArray = resize(labelArray, cg.image_size)
-               print(file + ' ' + 'Resized:' + str(labelArray.shape)) 
-            label = np.concatenate((label, labelArray), axis= 2)
-            print(file + ' ' + 'loaded & appended.')
-            cout += 1
-        except nib.filebasedimages.ImageFileError :
-            pass
-        # 防止隐藏文件
-    
-    sample = sample[:,:,1:]
-    label = label[:,:,1:]
-    sample = np.transpose(sample, (2,0,1))
-    label = np.transpose(label, (2,0,1))
-    sample = np.expand_dims(sample, axis=1)
-    label = np.expand_dims(label, axis =1)
+    sample_a = sample_a[:,:,1:]
+    label_a = label_a[:,:,1:]
+    sample_a = np.transpose(sample_a, (2,0,1))
+    label_a = np.transpose(label_a, (2,0,1))
+    sample_a = np.expand_dims(sample_a, axis=1)
+    label_a = np.expand_dims(label_a, axis =1)
     # nii体素值非灰度值，可以在[0,255]之外, 转换为NCHW格式
 
-    print('All samples loaded & npy shape is:' + str(sample.shape))
-    print('All labels loaded & npy shape is:' + str(label.shape))
+    print('All samples loaded & npy shape is:' + str(sample_a.shape))
+    print('All labels loaded & npy shape is:' + str(label_a.shape))
 
-    np.save(outputfolder + '/' + sampleFolder + '/' + 'sample.npy', sample)
-    np.save(outputfolder + '/' + labelFolder + '/' + 'label.npy', label)
+    np.save(outputfolder + '/' + sampleFolder + '/' + 'sample.npy', sample_a)
+    np.save(outputfolder + '/' + labelFolder + '/' + 'label.npy', label_a)
     
     print('samples have been saved in' + outputfolder + '/' + sampleFolder)
     print('labels have been saved in' + outputfolder + '/' + labelFolder)
