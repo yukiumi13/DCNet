@@ -124,6 +124,9 @@ def main(Args):
         label_resampled_array = label_resampled.get_fdata()
         img_s = img_resampled_array[:,:,idx]
         label_s = label_resampled_array[:,:,idx]
+        # binary threshold
+        label_s[label_s>=0.5] = 255
+        label_s[label_s<0.5] = 0
         for i in range(0,len(idx)):
             img2show = img_s[:,:,i]
             label2show = label_s[:,:,i]
