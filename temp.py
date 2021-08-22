@@ -80,7 +80,7 @@ print(img_resampled.header['pixdim'][1:4])
 label = nib.load('../SrcData/Label/mask-20.nii.gz')
 img_array = img.get_fdata()
 label_array = label.get_fdata()
-
+'''
 idx = []
 for i in range(0,slice_num):
     if np.max(img_array[:,:,i])== 0:
@@ -105,6 +105,9 @@ for i in range(0,len(idx)):
     plt.subplot(1,2,2)
     plt.imshow(label2show, cmap="gray")
     plt.title('label')
+'''
+img_array[img_array>127] = 255
+img_array[~(img_array>127)] = 0
 
     
     
