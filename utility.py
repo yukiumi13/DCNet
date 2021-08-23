@@ -10,7 +10,6 @@ import SimpleITK as sitk
 import matplotlib.pyplot as plt
 import gui
 
-
 def myshow(img, title=None, margin=0.05, dpi=80):
     nda = sitk.GetArrayViewFromImage(img)
     spacing = img.GetSpacing()
@@ -39,3 +38,12 @@ def disp_images(images, fig_size, wl_list=None):
       gui.multi_image_display2D(image_list=images, figure_size=fig_size, window_level_list=wl_list)
     else:
       gui.MultiImageDisplay(image_list=images, figure_size=fig_size, window_level_list=wl_list)
+
+def show_sample_label(img2show, label2show):
+    plt.figure()
+    plt.subplot(1,2,1)
+    plt.imshow(img2show, cmap="gray")
+    plt.title('sample')
+    plt.subplot(1,2,2)
+    plt.imshow(label2show, cmap="gray")
+    plt.title('label')
