@@ -125,8 +125,11 @@ def main(Args):
         img_s = img_resampled_array[:,:,idx]
         label_s = label_resampled_array[:,:,idx]
         # binary threshold
-        label_s[label_s>=0.5] = 255
+        label_s[label_s>=0.5] = 1
         label_s[label_s<0.5] = 0
+        # Normalization
+        _range = np.max(img_s)
+        img_s = img_s/_range
         for i in range(0,len(idx)):
             img2show = img_s[:,:,i]
             label2show = label_s[:,:,i]
@@ -154,8 +157,8 @@ def main(Args):
     print('All samples loaded & npy shape is:' + str(sample_a.shape))
     print('All labels loaded & npy shape is:' + str(label_a.shape))
 
-    np.save(outputfolder + '/' + sampleFolder + '/' + 'sample.npy', sample_a)
-    np.save(outputfolder + '/' + labelFolder + '/' + 'label.npy', label_a)
+    np.save(outputfolder + '/' + 'sample.npy', sample_a)
+    np.save(outputfolder + '/' + 'label.npy', label_a)
     
     print('samples have been saved in' + outputfolder + '/' + sampleFolder)
     print('labels have been saved in' + outputfolder + '/' + labelFolder)
