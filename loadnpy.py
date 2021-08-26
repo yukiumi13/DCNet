@@ -16,7 +16,7 @@ from config import Config as cg
 from torch.utils.data import Dataset
 from torchvision import transforms
 
-torch.manual_seed(1)  # reproducible
+torch.manual_seed(2)  # reproducible
 
 class ImageDataset(Dataset):
     def __init__(self, image, label):
