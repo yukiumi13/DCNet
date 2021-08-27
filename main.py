@@ -133,7 +133,7 @@ def test(data):
             plt.imshow(ls643_2, cmap='gray')
             plt.axis('off')
             plt.subplot(1,2,2)
-            plt.imshow(ls644_2)
+            plt.imshow(ls644_2, cmap='gray')
             plt.axis('off')
             plt.show()
             print('Test','Cross Entropy=', cross_entropy , 'MAE=', MAE, 'Fscore=', F_score)
