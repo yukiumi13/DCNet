@@ -126,6 +126,7 @@ def test(data):
             ls643_1 = torch.squeeze(ls643)
             ls643_2 = trans(ls643_1)
             ls644 = ys.clone().cpu()
+            ls644 = ls644[0,:,:,:]
             ls644_1 = torch.squeeze(ls644)
             ls644_2 = trans(ls644_1)
             plt.figure()
