@@ -28,7 +28,7 @@ def train(data):
     ssm = single_salicency_model(drop_rate=0.2, layers=12)
     # ssm = torch.nn.DataParallel(ssm, device_ids=[0, 1]) 分布式训练
     ssm.cuda()
-    ssm.load_state_dict(torch.load('bmvc_current.pth'))
+    ssm.load_state_dict(torch.load('bmvc_cv_single.pth'))
     ssm = ssm.train()
     torch.backends.cudnn.enabled = True
     torch.backends.cudnn.benchmark = True
@@ -37,7 +37,7 @@ def train(data):
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, [25, 30], 0.1)
     # lrdecay管理器
     min_loss = 10
-    for epoch in range(150):
+    for epoch in range(300):
         for i, (imagedata, labeldata) in enumerate(data):
             xs = imagedata.cuda()
             ys = labeldata.cuda()
