@@ -47,3 +47,18 @@ def show_sample_label(img2show, label2show):
     plt.subplot(1,2,2)
     plt.imshow(label2show, cmap="gray")
     plt.title('label')
+    
+def cvt_dcm_nii(path,o_path):
+    series_ID = sitk.ImageSeriesReader.GetGDCMSeriesIDs(path)
+    series_file_names = sitk.ImageSeriesReader.GetGDCMSeriesFileNames(path)
+    series_reader = sitk.ImageSeriesReader()
+    series_reader.SetFileNames(series_file_names)
+    
+    image_3d = series_reader.Execute()
+    sitk.WriteImage(image_3d, o_path)
+
+
+
+
+
+

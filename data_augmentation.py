@@ -13,8 +13,6 @@ import numpy as np
 import random
 import utility
 
-# reproducible
-random.seed(2021)
 
 data_path = '/Users/menglidaren/Desktop/SrcData/IMG'
 
@@ -27,9 +25,9 @@ idx_t = random.sample(range(0,idx_range), int(0.2*idx_range))
 idx_f = random.sample(range(0,idx_range), int(0.2*idx_range))
 shape = sample_array.shape[2:4]
 mat_rotate = []
-for i in range(1,7):
-    m_p = cv2.getRotationMatrix2D((shape[0]//2,shape[1]//2), i*1.5 ,1)
-    m_n = cv2.getRotationMatrix2D((shape[0]//2,shape[1]//2), -i*1.5 ,1)
+for i in range(1,5):
+    m_p = cv2.getRotationMatrix2D((shape[0]//2,shape[1]//2), i*0.5 ,1)
+    m_n = cv2.getRotationMatrix2D((shape[0]//2,shape[1]//2), -i*0.5 ,1)
     mat_rotate.append(m_p)
     mat_rotate.append(m_n)
 # rotation
@@ -37,7 +35,6 @@ print('rotate 10% of images')
 for i in idx_r:
     sample2rotate = sample_array[i,0,:,:]
     label2roatate = label_array[i,0,:,:]
-    # rotate image 2.5, 5, 7.5, 10 degrees
     sample_rotated = []
     label_rotated = []
     for rotate in mat_rotate:
@@ -62,8 +59,8 @@ print('translate 20% of images')
     
 # translation
 for i in idx_t:
-    tx = float(random.randint(1,7))
-    ty = float(random.randint(1,7))
+    tx = float(random.randint(1,3))
+    ty = float(random.randint(1,3))
     mat_translation = []
     mat_translation.append(np.array([[1,0,tx],[0,1,ty]]))
     mat_translation.append(np.array([[1,0,-tx],[0,1,-ty]]))
