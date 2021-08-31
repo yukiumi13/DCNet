@@ -144,7 +144,7 @@ if __name__ == '__main__':
     
     if mod == 'train': 
         # os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
-        data1 = ImageDataset('../IMG/sample/.npy', '../IMG/label.npy' + labelPath[0])
+        data1 = ImageDataset('../IMG/sample/.npy', '../IMG/label.npy')
         data = DataLoader(data1, batch_size=4, shuffle=True, pin_memory=False)
         train(data)
         # test(data)
