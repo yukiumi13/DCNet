@@ -57,7 +57,7 @@ def train(data):
             prec, recall, F_score = F_measure(ysc, yp)
             mask=torch.ones(cg.image_size,cg.image_size).cuda()
             background = torch.zeros(cg.image_size,cg.image_size).cuda()
-            yp_threshold = torch.where(yp>0.3, mask, background)
+            yp_threshold = torch.where(yp>0.5, mask, background)
             dice = diceCal(yp_threshold, ys)
             ls643 = yp_threshold.clone().cpu()
             ls643 = ls643[0,:,:,:]
@@ -89,8 +89,7 @@ def train(data):
             cross_entropy.backward()
             optimizer.step()
 
-            print('epoch=', epoch, "sampleNo.=", i, 'minloss=', min_loss,  'cross_entropy=', cross_entropy, 'mae=', MAE, 'prec=', prec, 'recall=', recall,
-                  'fscore=', F_score, 'dice=', dice)
+            print('epoch=', epoch, "sampleNo.=", i, 'minloss=', min_loss,  'cross_entropy=', cross_entropy, 'dice=', dice)
     scheduler.step()
 
 
@@ -145,9 +144,7 @@ if __name__ == '__main__':
     
     if mod == 'train': 
         # os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
-        samplePath = os.listdir('../IMG/sample')
-        labelPath = os.listdir('../IMG/label')
-        data1 = ImageDataset('../IMG/sample/' + samplePath[0], '../IMG/label/' + labelPath[0])
+        data1 = ImageDataset('../IMG/sample/.npy', '../IMG/label.npy' + labelPath[0])
         data = DataLoader(data1, batch_size=4, shuffle=True, pin_memory=False)
         train(data)
         # test(data)
