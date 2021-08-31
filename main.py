@@ -144,7 +144,7 @@ if __name__ == '__main__':
     
     if mod == 'train': 
         # os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
-        data1 = ImageDataset('../IMG/sample/.npy', '../IMG/label.npy')
+        data1 = ImageDataset('../IMG/sample.npy', '../IMG/label.npy')
         data = DataLoader(data1, batch_size=4, shuffle=True, pin_memory=False)
         train(data)
         # test(data)
@@ -152,6 +152,6 @@ if __name__ == '__main__':
     if mod == 'test':
         samplePath = os.listdir('../testset/sample')
         labelPath = os.listdir('../testset/label')
-        data1 = ImageDataset('../testset/sample/' + samplePath[0], '../testset/label/' + labelPath[0])
+        data1 = ImageDataset('../testset/sample.npy' + samplePath[0], '../testset/label.npy')
         data = DataLoader(data1, batch_size=1, shuffle=True, pin_memory=False)
         test(data)
