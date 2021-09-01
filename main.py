@@ -60,13 +60,13 @@ def train(data):
             # yp_threshold = torch.where(yp>0.5, mask, background)
             # dice = diceCal(yp_threshold, ys)
             # ls643 = yp_threshold.clone().cpu()
-            dice = diceCal(yp,ys)
+            dice = dice_unweighted(yp,ys)
             ls643 = yp.clone().cpu()
             ls643 = ls643[0,:,:,:]
             ls643_1 = torch.squeeze(ls643)
             ls643_2 = trans(ls643_1)
             ls644 = ys.clone().cpu()
-            ls644 = ls644[0,:,:,:]
+            ls644 = ls644[0,:,:]
             ls644_1 = torch.squeeze(ls644)
             ls644_2 = trans(ls644_1)
             plt.figure()
