@@ -343,12 +343,12 @@ def diceCal(yp, gt):
     dice = 2 * numerator / (denominator + 1e-12)
     return dice
 
-def dice_coef(output, target):#output为预测结果 target为真实结果
-    smooth = 1e-12
-
-    output = output.data.cpu().numpy()
-    target = target.data.cpu().numpy()
-
-    intersection = (output * target).sum()
-
-    return (2. * intersection + smooth) / (output.sum() + target.sum() + smooth)
+def dice_unweighted(yp,gt):
+    mask_front = gt
+    mask_background = 1 - gt
+    pro_front = yp
+    pro_background = 1 - yp
+    numerator = torch.sum(mask_front * pro_front))
+    denominator = torch.sum(mask_front+pro_front)
+    dice = 2 * numerator / (denominator + 1e-12)
+    return dice 
