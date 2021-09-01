@@ -349,6 +349,6 @@ def dice_unweighted(yp,gt):
     pro_front = yp
     pro_background = 1 - yp
     numerator = torch.sum(mask_front * pro_front)
-    denominator = torch.sum(mask_front + pro_front) 
+    denominator = torch.sum(mask_front+pro_front)
     dice = 2 * numerator / (denominator + 1e-12)
     return dice 
