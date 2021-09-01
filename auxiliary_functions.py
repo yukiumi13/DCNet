@@ -342,3 +342,13 @@ def diceCal(yp, gt):
     denominator = w1 * torch.sum(mask_front + pro_front) + w2 * torch.sum(mask_background + pro_background)
     dice = 2 * numerator / (denominator + 1e-12)
     return dice
+
+def dice_unweighted(yp,gt):
+    mask_front = gt
+    mask_background = 1 - gt
+    pro_front = yp
+    pro_background = 1 - yp
+    numerator = torch.sum(mask_front * pro_front) + torch.sum(mask_background * pro_background)
+    denominator = torch.sum(mask_front + pro_front) + torch.sum(mask_background + pro_background)
+    dice = 2 * numerator / (denominator + 1e-12)
+    return dice 
