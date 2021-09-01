@@ -61,7 +61,7 @@ def train(data):
             # dice = diceCal(yp_threshold, ys)
             # ls643 = yp_threshold.clone().cpu()
             dice = diceCal(yp,ys)
-            ls643 = yp.clone.cpu()
+            ls643 = yp.clone().cpu()
             ls643 = ls643[0,:,:,:]
             ls643_1 = torch.squeeze(ls643)
             ls643_2 = trans(ls643_1)
