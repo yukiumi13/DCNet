@@ -13,13 +13,12 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-dataset = 'NPC-seg'
-dataRootPath = '../npys/'+ dataset + '/IMG'
-sample = np.load(dataRootPath + '/sample/sample.npy')
-label = np.load(dataRootPath+'/label/label.npy')
+dataRootPath = '../IMG'
+sample = np.load(dataRootPath + '/sample.npy')
+label = np.load(dataRootPath+'/label.npy')
 length = label.shape[0]
 #Data Visualization
-'''
+
 for i in range(0,length-1):
     sample_sampled = sample[i,:,:,:]
     sample_sampled = np.squeeze(sample_sampled)
@@ -35,7 +34,7 @@ for i in range(0,length-1):
     plt.axis('off')
     plt.title(str(i))
     plt.show()
-'''
+
 '''
 sample2save = sample[1333,:,:,:]
 sample2save = np.rot90(np.squeeze(sample2save))
@@ -63,11 +62,3 @@ fig.savefig('../challenge.eps',dpi=300,format='eps')
 plt.show()
 '''
 
-# Get SVG
-idx = random.sample(range(0,length),3)
-for i in idx:
-    sample2show = sample[i,0,:,:]
-    plt.figure()
-    plt.imshow(sample2show, cmap = 'gray')
-    plt.axis('off')
-    plt.show()
