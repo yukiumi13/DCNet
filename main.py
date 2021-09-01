@@ -60,7 +60,7 @@ def train(data):
             yp = torch.where(yp>0.5, mask, background)
             # dice = diceCal(yp_threshold, ys)
             # ls643 = yp_threshold.clone().cpu()
-            dice = dice_unweighted(yp,ys)
+            dice = dice_coef(yp,ys)
             ls643 = yp.clone().cpu()
             ls643 = ls643[0,:,:,:]
             ls643_1 = torch.squeeze(ls643)
@@ -120,7 +120,6 @@ def test(data):
             loss_256,dice_256 = fused_loss(logits_scale_256_upsampled_to_256_sigmoid, ysc)
             loss_yp,dice_yp = fused_loss(yp, ysc)
             cross_entropy = loss_yp + loss_64_3 + loss_64_2 + loss_64_1 + loss_128 + loss_256
-            print(cross_entropy.type())
             MAE = torch.mean(torch.abs(yp - ysc))
             prec, recall, F_score = F_measure(ysc, yp)
             ls643 = yp.clone().cpu()
