@@ -77,17 +77,11 @@ def main(Args):
     sampleFile = os.listdir(inputfolder + '/' + sampleFolder)
     # labelFile = os.listdir(inputfolder + '/' + labelFolder) 由于随机性，故不可以直接读取
 
-    if os.path.exists(outputfolder + '/' + 'sample'):
+    if os.path.exists(outputfolder):
         pass 
     else: 
         print("Created ouput directory: " + outputfolder +'/' + 'sample')
-        os.mkdir(outputfolder + '/' + 'sample')
-    
-    if os.path.exists(outputfolder + '/' + 'label'):
-        pass 
-    else: 
-        print("Created ouput directory: " + outputfolder + '/' + 'label')
-        os.mkdir(outputfolder + '/' + 'label')
+        os.mkdir(outputfolder)
     
 
     
