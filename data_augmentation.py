@@ -20,12 +20,11 @@ sample_array = np.load(data_path+'/'+'sample.npy')
 label_array = np.load(data_path + '/' + 'label.npy')
 # get index
 idx_range = sample_array.shape[0]
-'''
 idx_r = random.sample(range(0,idx_range), int(0.1*idx_range))
 idx_t = random.sample(range(0,idx_range), int(0.2*idx_range))
 idx_f = random.sample(range(0,idx_range), int(0.2*idx_range))
-'''
-idx_r, idx_f, idx_t = idx_range, idx_range, idx_range
+
+# idx_r, idx_f, idx_t = idx_range, idx_range, idx_range
 shape = sample_array.shape[2:4]
 mat_rotate = []
 for i in range(1,5):
@@ -58,7 +57,7 @@ for i in range(0,idx_r):
     '''
     sample_array = np.concatenate((sample_array,sample_rotated),0)
     label_array = np.concatenate((label_array, label_rotated),0)
-print(str(label_rotated.shape[0]*idx_r) + ' images are created')
+print(str(label_rotated.shape[0]*len(idx_r)) + ' images are created')
 print('========================================================')
 print('translate 20% of images')
     
@@ -93,7 +92,7 @@ for i in range(0,idx_t):
     '''
     sample_array = np.concatenate((sample_array,sample_translated),0)  
     label_array = np.concatenate((label_array, label_translated),0)
-print(str(label_translated.shape[0]*idx_t) + ' images are created')
+print(str(label_translated.shape[0]*len(idx_t)) + ' images are created')
 print('========================================================')
 print('flip 20% of images')
 # flip
@@ -109,7 +108,7 @@ for i in range(0,idx_f):
     # utility.show_sample_label(sample_fliped[0,0,:,:],label_fliped[0,0,:,:])
     sample_array = np.concatenate((sample_array,sample_fliped),0)
     label_array = np.concatenate((label_array, label_fliped),0)
-print(str(label_fliped.shape[0]*idx_f) + ' images are created')
+print(str(label_fliped.shape[0]*len(idx_f)) + ' images are created')
 
     
 np.save(data_path+'/augmentation/sample.npy',sample_array)
