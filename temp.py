@@ -2,8 +2,8 @@ import numpy as np
 # import SimpleITK as sitk
 import matplotlib.pyplot as plt
 # from utility import *
-import nibabel as nib
-import nibabel.processing as proc
+# import nibabel as nib
+# import nibabel.processing as proc
 '''Create Grid Image
 grid = sitk.GridSource(outputPixelType=sitk.sitkUInt16,
     size=(250, 250),
@@ -41,13 +41,14 @@ mr_roi = threshold_based_crop(mr_image)
 disp_images(mr_roi)
 
 '''
-
+'''
 img = nib.load('../SrcData/Sample/sample20.nii.gz')
 obj = nib.load('../SrcData/Sample/sample7.nii.gz')
 # print(header)
 # img = img.get_fdata()
 shape = img.header.get_data_shape()
 slice_num = shape[2]
+'''
 '''
 img_resized = proc.conform(img,out_shape=(256,256,slice_num))
 print(img_resized.header.get_data_shape())
@@ -77,9 +78,11 @@ print(img_resampled.header['pixdim'][1:4])
 # print(img.header)
 # print(img_resampled.header)
 '''
+'''
 label = nib.load('../SrcData/Label/mask-20.nii.gz')
 img_array = img.get_fdata()
 label_array = label.get_fdata()
+'''
 '''
 idx = []
 for i in range(0,slice_num):
@@ -106,8 +109,13 @@ for i in range(0,len(idx)):
     plt.imshow(label2show, cmap="gray")
     plt.title('label')
 '''
-img_array[img_array>127] = 255
-img_array[~(img_array>127)] = 0
+'''
+a = np.random.randint(1,9,size=[2,2])
+_max = np.max(a)
+b = a / _max
+print(a)
+print(b)
+'''
 
     
     

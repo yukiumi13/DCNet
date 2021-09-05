@@ -16,6 +16,7 @@ from config import Config as cg
 import nibabel as nib
 import nibabel.processing as proc
 import numpy as np
+import cv2
 import matplotlib.pyplot as plt
 import sys, getopt, os
 import time
@@ -57,7 +58,7 @@ def resize(img, size):
 
 def main(Args):
     inputfolder = '../SrcData'
-    outputfolder = '../SrcData/IMG'
+    outputfolder = '../SrcData/Patch/IMG'
     labelFolder = 'Label'
     sampleFolder = 'Sample'
     try:
@@ -97,7 +98,7 @@ def main(Args):
         sample = nib.load(inputfolder + '/' + sampleFolder + '/' + file)
         label = nib.load(inputfolder + '/' + labelFolder + '/' + labelName)
         slice_shape = sample.shape
-        shape = [256,256,slice_shape[2]]
+        shape = [384,384,slice_shape[2]]
         print(file+' with a size of '+ str(slice_shape) + ' loaded')
         print('========================================================')
         print('Data Cleaning')
@@ -118,13 +119,43 @@ def main(Args):
         label_resampled_array = label_resampled.get_fdata()
         img_s = img_resampled_array[:,:,idx]
         label_s = label_resampled_array[:,:,idx]
+        
+        #Patche-based
+        img_temp = []
+        img_temp.append(img_s[0:256,0:256,:])
+        img_temp.append(img_s[-256:,0:256:,:])
+        img_temp.append(img_s[0:256,-256:,:])
+        img_temp.append(img_s[-256:,-256:,:])
+        
+        label_temp=[]
+        label_temp.append(label_s[0:256,0:256,:])
+        label_temp.append(label_s[-256:,0:256,:])
+        label_temp.append(label_s[0:256,-256:,:])
+        label_temp.append(label_s[-256:,-256:,:])
+        
+        img_s = np.concatenate(img_temp, axis=2)
+        label_s = np.concatenate(label_temp,axis=2)
+
+        #histogram equalization
+
         # binary threshold
         label_s[label_s>=0.5] = 1
         label_s[label_s<0.5] = 0
+        
         # Normalization
+        ## slice
+        '''
+        for i in range(1,len(idx)):
+            img_n = img_s[:,:,i]
+            _range = np.max(img_n)
+            img_s[:,:,i] = img_s[:,:,i]/_range
+        '''
+        ## volume
         _range = np.max(img_s)
         img_s = img_s/_range
-        for i in range(0,len(idx)):
+        
+        # Visualization
+        for i in range(0,img_s.shape[2]):
             img2show = img_s[:,:,i]
             label2show = label_s[:,:,i]
             plt.figure()
@@ -134,11 +165,13 @@ def main(Args):
             plt.subplot(1,2,2)
             plt.imshow(label2show, cmap="gray")
             plt.title('label')
+
         print(str(len(idx)) + ' out of ' + str(slice_shape[2]) + ' selected.')
         sample_a = np.concatenate((sample_a,img_s), axis=2)
         label_a = np.concatenate((label_a,label_s), axis=2)
         print(file + ' loaded & appended.')
         print('========================================================')
+    
     
     sample_a = sample_a[:,:,1:]
     label_a = label_a[:,:,1:]
@@ -146,7 +179,6 @@ def main(Args):
     label_a = np.transpose(label_a, (2,0,1))
     sample_a = np.expand_dims(sample_a, axis=1)
     label_a = np.expand_dims(label_a, axis =1)
-    # nii体素值非灰度值，可以在[0,255]之外, 转换为NCHW格式
 
     print('All samples loaded & npy shape is:' + str(sample_a.shape))
     print('All labels loaded & npy shape is:' + str(label_a.shape))
@@ -154,8 +186,8 @@ def main(Args):
     np.save(outputfolder + '/' + 'sample.npy', sample_a)
     np.save(outputfolder + '/' + 'label.npy', label_a)
     
-    print('samples have been saved in' + outputfolder + '/' + sampleFolder)
-    print('labels have been saved in' + outputfolder + '/' + labelFolder)
+    print('samples have been saved in' + outputfolder)
+    print('labels have been saved in' + outputfolder)
 
 
     
