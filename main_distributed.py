@@ -12,7 +12,7 @@
 import numpy as np
 from config import Config as cg
 import os
-# os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
 import sys
 # sys.path.append('/home/fengtianyuan/code2')
 from auxiliary_functions import *
@@ -28,7 +28,7 @@ def train(data):
     ssm = single_salicency_model(drop_rate=0.2, layers=12)
     # ssm = torch.nn.DataParallel(ssm, device_ids=[0, 1]) 分布式训练
     ssm.cuda()
-    ssm.load_state_dict(torch.load('bmvc_cv_single.pth'))
+    ssm.load_state_dict(torch.load('bmvc_current_distributed.pth'))
     ssm = ssm.train()
     torch.backends.cudnn.enabled = True
     torch.backends.cudnn.benchmark = True
