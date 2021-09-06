@@ -295,7 +295,7 @@ def fused_loss(yp,gt):
     cross_entropy_loss = -torch.mean(0.1 * w * mask_front * torch.log(pro_front + 1e-12) + mask_background * torch.log(
         pro_background + 1e-12))
 
-    return  5*dice_loss + cross_entropy_loss, dice
+    return  1.75*dice_loss + 0.25*cross_entropy_loss, dice
     #return  mae_loss + cross_entropy_loss
 
 
