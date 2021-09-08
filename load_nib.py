@@ -57,8 +57,8 @@ def resize(img, size):
     return img
 
 def main(Args):
-    inputfolder = '../SrcData'
-    outputfolder = '../SrcData/Patch/IMG'
+    inputfolder = '../test_data'
+    outputfolder = '../test_data/IMG'
     labelFolder = 'Label'
     sampleFolder = 'Sample'
     try:
