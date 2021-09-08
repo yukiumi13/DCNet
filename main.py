@@ -131,6 +131,7 @@ def test(data):
             cross_entropy = loss_yp + loss_64_3 + loss_64_2 + loss_64_1 + loss_128 + loss_256
             MAE = torch.mean(torch.abs(yp - ysc))
             prec, recall, F_score = F_measure(ysc, yp)
+            dice = dice_unweighted(yp,ys)
             yp_img = yp.clone().cpu()
             yp_img = yp_img[0,:,:,:]
             yp_img_1 = torch.squeeze(yp_img)
@@ -142,12 +143,14 @@ def test(data):
             plt.figure()
             plt.subplot(1,2,1)
             plt.imshow(yp_img_2, cmap='gray')
+            plt.title('pred')
             plt.axis('off')
             plt.subplot(1,2,2)
             plt.imshow(gt_img_2, cmap='gray')
+            plt.title('gt')
             plt.axis('off')
             plt.show()
-            print('Test','Cross Entropy=', cross_entropy , 'MAE=', MAE, 'Fscore=', F_score)
+            print('Dice=', dice)
 
 mod = 'train'
 
@@ -161,8 +164,6 @@ if __name__ == '__main__':
         # test(data)
 
     if mod == 'test':
-        samplePath = os.listdir('../testset/sample')
-        labelPath = os.listdir('../testset/label')
-        data1 = ImageDataset('../testset/sample.npy' + samplePath[0], '../testset/label.npy')
+        data1 = ImageDataset('../testset/sample.npy' + '../testset/label.npy')
         data = DataLoader(data1, batch_size=1, shuffle=True, pin_memory=False)
         test(data)
