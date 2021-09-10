@@ -274,7 +274,7 @@ class pyramid_pooling_64(nn.Module):
 
 
 def fused_loss(yp,gt):
-    # mae_loss = torch.mean(torch.log(1 + torch.exp(torch.abs(yp - gt))))  # yp是激活函数
+    mae_loss = torch.mean(torch.log(1 + torch.exp(torch.abs(yp - gt))))  # yp是激活函数
     # tf.compat.v1.summary.scalar("mae_loss", mae_loss)#显示标量信息，可视化张量
     mask_front = gt
     mask_background = 1 - gt
@@ -295,7 +295,7 @@ def fused_loss(yp,gt):
     cross_entropy_loss = -torch.mean(0.1 * w * mask_front * torch.log(pro_front + 1e-12) + mask_background * torch.log(
         pro_background + 1e-12))
 
-    return  1.75*dice_loss + 0.25*cross_entropy_loss, dice
+    return  dice_loss + mae_loss +cross_entropy_loss, dice
     #return  mae_loss + cross_entropy_loss
 
 
