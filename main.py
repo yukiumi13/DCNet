@@ -71,23 +71,26 @@ def train(data):
             out.append(logits_scale_64_2_upsampled_to_256_sigmoid.clone().cpu())
             out.append(logits_scale_64_3_upsampled_to_256_sigmoid.clone().cpu())
             plt.figure()
-            for i in range(0,yp_img.shape[0]):
+            for j in range(0,yp_img.shape[0]):
                 for lv, img in enumerate(out):
-                    img = img[i,:,:,:]
+                    img = img[j,:,:,:]
                     img_1 = torch.squeeze(img)
+                    img_c = img_1.unsqueeze(0)
                     img_2 = trans(img_1)
-                    plt.subplot(yp_img.shape[0],7,lv+1+i*7)
+                    plt.subplot(yp_img.shape[0],7,lv+1+j*7)
                     plt.imshow(img_2, cmap='gray')
                     plt.axis('off')
                     plt.title('S'+str(lv))
                 gt_img = ys.clone().cpu()
-                gt_img = gt_img[i,:,:]
+                gt_img = gt_img[j,:,:]
+                gt_img_c = gt_img.unsqueeze(0)
                 gt_img_1 = torch.squeeze(gt_img)
                 gt_img_2 = trans(gt_img_1)
-                plt.subplot(yp_img.shape[0],7,7+1+i*7)
+                plt.subplot(yp_img.shape[0],7,7+j*7)
                 plt.imshow(gt_img_2,cmap='gray')
                 plt.axis('off')
                 plt.title('G')
+                plt.savefig('Out.svg')
              
             if cross_entropy < min_loss:
                     min_loss = cross_entropy
