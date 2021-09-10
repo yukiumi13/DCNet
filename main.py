@@ -9,10 +9,11 @@
 @Desc    :   None
 '''
 
+from PIL.Image import Image
 import numpy as np
 from config import Config as cg
 import os
-# os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
 import sys
 # sys.path.append('/home/fengtianyuan/code2')
 from auxiliary_functions import *
@@ -22,13 +23,15 @@ import matplotlib.pyplot as plt
 import torchvision
 import torch
 import cv2
+import PIL
+import torch.utils.tensorboard as tb
 #log_dir = cg.root_path + "/log"
 
 def train(data):
     ssm = single_salicency_model(drop_rate=0.2, layers=12)
-    # ssm = torch.nn.DataParallel(ssm, device_ids=[0, 1]) 分布式训练
+    # ssm = torch.nn.DataParallel(ssm, device_ids=[0, 1, 2, 3])
     ssm.cuda()
-    ssm.load_state_dict(torch.load('bmvc_current.pth'))
+    ssm.load_state_dict(torch.load('bmvc_cv_single.pth'))
     ssm = ssm.train()
     torch.backends.cudnn.enabled = True
     torch.backends.cudnn.benchmark = True
@@ -37,7 +40,10 @@ def train(data):
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, [25, 30], 0.1)
     # lrdecay管理器
     min_loss = 10
-    for epoch in range(300):
+    min_dice = 0.7
+    writer = tb.SummaryWriter('./events')
+    train_idx = 0 
+    for epoch in range(100):
         for i, (imagedata, labeldata) in enumerate(data):
             xs = imagedata.cuda()
             ys = labeldata.cuda()
@@ -53,6 +59,7 @@ def train(data):
             loss_256 , dice_256 = fused_loss(logits_scale_256_upsampled_to_256_sigmoid, ysc)
             loss_yp , dice_yp = fused_loss(yp, ysc)
             cross_entropy = loss_yp + loss_64_3 + loss_64_2 + loss_64_1 + loss_128 + loss_256
+            writer.add_scalar('train/loss',cross_entropy,global_step=train_idx)
             MAE = torch.mean(torch.abs(yp - ysc))
             prec, recall, F_score = F_measure(ysc, yp)
             mask=torch.ones(cg.image_size,cg.image_size).cuda()
@@ -61,6 +68,8 @@ def train(data):
             # dice = diceCal(yp_threshold, ys)
             # ls643 = yp_threshold.clone().cpu()
             dice = dice_unweighted(yp,ys)
+            writer.add_scalar('train/dice',dice,global_step=train_idx)
+            train_idx += 1
             # Visualization 
             yp_img = yp.clone().cpu()
             out = []
@@ -76,6 +85,7 @@ def train(data):
                     img = img[j,:,:,:]
                     img_1 = torch.squeeze(img)
                     img_c = img_1.unsqueeze(0)
+                    writer.add_image('train/outputs/pred'+str(j)+'/level'+str(lv),img_c)
                     img_2 = trans(img_1)
                     plt.subplot(yp_img.shape[0],7,lv+1+j*7)
                     plt.imshow(img_2, cmap='gray')
@@ -84,6 +94,7 @@ def train(data):
                 gt_img = ys.clone().cpu()
                 gt_img = gt_img[j,:,:]
                 gt_img_c = gt_img.unsqueeze(0)
+                writer.add_image('train/outputs/gt'+str(j),gt_img_c)
                 gt_img_1 = torch.squeeze(gt_img)
                 gt_img_2 = trans(gt_img_1)
                 plt.subplot(yp_img.shape[0],7,7+j*7)
@@ -91,6 +102,17 @@ def train(data):
                 plt.axis('off')
                 plt.title('G')
                 plt.savefig('Out.svg')
+
+            '''
+            if dice > 0.8:
+                plt.savefig('results/'+str(dice)+'.svg')
+            '''
+            if dice > min_dice:
+                plt.savefig('Best.svg')
+                min_dice = dice
+                print('min_dice',min_dice)
+            
+
              
             if cross_entropy < min_loss:
                     min_loss = cross_entropy
@@ -104,7 +126,7 @@ def train(data):
             cross_entropy.backward()
             optimizer.step()
 
-            print('epoch=', epoch, "sampleNo.=", i, 'minloss=', min_loss,  'cross_entropy=', cross_entropy, 'dice=', dice)
+            print('epoch=', epoch, "sampleNo.=", i, 'minloss=', min_loss.item(),  'cross_entropy=', cross_entropy.item(), 'dice=', dice.item())
     scheduler.step()
 
 
@@ -114,7 +136,8 @@ def test(data):
 
     ssm = single_salicency_model(drop_rate=0.2, layers=12)
     ssm.cuda()
-    ssm.load_state_dict(torch.load('bmvc_cv_single.pth'))
+    ssm = torch.nn.DataParallel(ssm, device_ids=[0, 1, 2, 3])
+    ssm.load_state_dict(torch.load('bmvc_current_distributed.pth'))
     ssm.eval()
     trans = torchvision.transforms.ToPILImage()
     for epoch in range(1):
@@ -139,21 +162,27 @@ def test(data):
             yp_img = yp_img[0,:,:,:]
             yp_img_1 = torch.squeeze(yp_img)
             yp_img_2 = trans(yp_img_1)
+            # yp_img_2 = yp_img_2.transpose(PIL.Image.FLIP_LEFT_RIGHT)
+            yp_img_2 = yp_img_2.transpose(PIL.Image.FLIP_TOP_BOTTOM)
+            yp_img_2 = yp_img_2.rotate(90)
             gt_img = ys.clone().cpu()
-            gt_img = gt_img[0,:,:,:]
+            gt_img = gt_img[0,:,:]
             gt_img_1 = torch.squeeze(gt_img)
             gt_img_2 = trans(gt_img_1)
+            # gt_img_2 = gt_img_2.transpose(PIL.Image.FLIP_LEFT_RIGHT)
+            gt_img_2 = gt_img_2.transpose(PIL.Image.FLIP_TOP_BOTTOM)
+            gt_img_2 = gt_img_2.rotate(90)
             plt.figure()
             plt.subplot(1,2,1)
             plt.imshow(yp_img_2, cmap='gray')
-            plt.title('pred')
             plt.axis('off')
+            plt.title('prediction')
             plt.subplot(1,2,2)
             plt.imshow(gt_img_2, cmap='gray')
-            plt.title('gt')
             plt.axis('off')
-            plt.show()
-            print('Dice=', dice)
+            plt.title('ground truth')
+            plt.savefig('testresults/test'+str(i)+'.jpg')
+            print('Test ',i,' Dice=', dice)
 
 mod = 'train'
 
@@ -167,6 +196,6 @@ if __name__ == '__main__':
         # test(data)
 
     if mod == 'test':
-        data1 = ImageDataset('../testset/sample.npy' + '../testset/label.npy')
-        data = DataLoader(data1, batch_size=1, shuffle=True, pin_memory=False)
+        data1 = ImageDataset('testset/sample.npy', 'testset/label.npy')
+        data = DataLoader(data1, batch_size=17, shuffle=True, pin_memory=False)
         test(data)
