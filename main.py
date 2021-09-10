@@ -76,7 +76,7 @@ def train(data):
                     img = img[i,:,:,:]
                     img_1 = torch.squeeze(img)
                     img_2 = trans(img_1)
-                    plt.subplot(yp_img.shape[0],7,lv+i*7)
+                    plt.subplot(yp_img.shape[0],7,lv+1+i*7)
                     plt.imshow(img_2, cmap='gray')
                     plt.axis('off')
                     plt.title('S'+str(lv))
