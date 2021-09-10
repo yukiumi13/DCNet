@@ -126,7 +126,7 @@ def train(data):
             cross_entropy.backward()
             optimizer.step()
 
-            print('epoch=', epoch, "sampleNo.=", i, 'minloss=', min_loss.item(),  'cross_entropy=', cross_entropy.item(), 'dice=', dice.item())
+            print('epoch=', epoch, "sampleNo.=", i, 'minloss=', min_loss,  'cross_entropy=', cross_entropy, 'dice=', dice)
     scheduler.step()
 
 
