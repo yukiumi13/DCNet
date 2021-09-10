@@ -65,7 +65,7 @@ def train(data):
             yp_img = yp.clone().cpu()
             out = []
             out.append(yp_img)
-            out.append(logits_scale_256_upsampled_to_256_sigmoid().clone().cpu())
+            out.append(logits_scale_256_upsampled_to_256_sigmoid.clone().cpu())
             out.append(logits_scale_128_upsampled_to_256_sigmoid.clone().cpu())
             out.append(logits_scale_64_1_upsampled_to_256_sigmoid.clone().cpu())
             out.append(logits_scale_64_2_upsampled_to_256_sigmoid.clone().cpu())
