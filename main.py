@@ -28,7 +28,7 @@ def train(data):
     ssm = single_salicency_model(drop_rate=0.2, layers=12)
     # ssm = torch.nn.DataParallel(ssm, device_ids=[0, 1]) 分布式训练
     ssm.cuda()
-    ssm.load_state_dict(torch.load('bmvc.pth'))
+    ssm.load_state_dict(torch.load('bmvc_current.pth'))
     ssm = ssm.train()
     torch.backends.cudnn.enabled = True
     torch.backends.cudnn.benchmark = True
@@ -84,7 +84,7 @@ def train(data):
                 gt_img = gt_img[i,:,:]
                 gt_img_1 = torch.squeeze(gt_img)
                 gt_img_2 = trans(gt_img_1)
-                plt.subplot(yp_img.shape[0],7,7+i*7)
+                plt.subplot(yp_img.shape[0],7,7+1+i*7)
                 plt.imshow(gt_img_2,cmap='gray')
                 plt.axis('off')
                 plt.title('G')
