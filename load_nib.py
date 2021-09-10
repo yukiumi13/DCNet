@@ -58,9 +58,11 @@ def resize(img, size):
 
 def main(Args):
     inputfolder = '../test_data'
-    outputfolder = '../test_data/IMG'
+    outputfolder = '../test_data/testset'
     labelFolder = 'Label'
     sampleFolder = 'Sample'
+    if os.path.exists(inputfolder +'/'+sampleFolder+'/'+'.DS_Store'):
+        os.remove(inputfolder +'/'+sampleFolder+'/'+'.DS_Store')
     try:
         opts, args = getopt.getopt(Args, "i:o:", ["ifile=", "ofile="])
     except getopt.GetoptError:
@@ -98,7 +100,7 @@ def main(Args):
         sample = nib.load(inputfolder + '/' + sampleFolder + '/' + file)
         label = nib.load(inputfolder + '/' + labelFolder + '/' + labelName)
         slice_shape = sample.shape
-        shape = [384,384,slice_shape[2]]
+        shape = [256,256,slice_shape[2]]
         print(file+' with a size of '+ str(slice_shape) + ' loaded')
         print('========================================================')
         print('Data Cleaning')
@@ -121,6 +123,7 @@ def main(Args):
         label_s = label_resampled_array[:,:,idx]
         
         #Patche-based
+        '''
         img_temp = []
         img_temp.append(img_s[0:256,0:256,:])
         img_temp.append(img_s[-256:,0:256:,:])
@@ -135,6 +138,7 @@ def main(Args):
         
         img_s = np.concatenate(img_temp, axis=2)
         label_s = np.concatenate(label_temp,axis=2)
+        '''
 
         #histogram equalization
 
