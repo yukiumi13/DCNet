@@ -31,7 +31,7 @@ def train(data):
     ssm = single_salicency_model(drop_rate=0.2, layers=12)
     # ssm = torch.nn.DataParallel(ssm, device_ids=[0, 1, 2, 3])
     ssm.cuda()
-    ssm.load_state_dict(torch.load('bmvc_cv_single.pth'))
+    ssm.load_state_dict(torch.load('bmvc.pth'))
     ssm = ssm.train()
     # fine-tune
     torch.backends.cudnn.enabled = True
