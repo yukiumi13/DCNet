@@ -14,7 +14,7 @@ import random
 import utility
 
 
-data_path = '/Users/menglidaren/Desktop/SrcData/IMG'
+data_path = '/Users/menglidaren/Desktop/train_data/origin/IMG'
 
 sample_array = np.load(data_path+'/'+'sample.npy')
 label_array = np.load(data_path + '/' + 'label.npy')
@@ -34,7 +34,7 @@ for i in range(1,5):
     mat_rotate.append(m_n)
 # rotation
 print('rotate 10% of images')
-for i in range(0,idx_r):
+for i in idx_r:
     sample2rotate = sample_array[i,0,:,:]
     label2roatate = label_array[i,0,:,:]
     sample_rotated = []
@@ -62,7 +62,7 @@ print('========================================================')
 print('translate 20% of images')
     
 # translation
-for i in range(0,idx_t):
+for i in idx_t:
     tx = float(random.randint(1,3))
     ty = float(random.randint(1,3))
     mat_translation = []
@@ -96,7 +96,7 @@ print(str(label_translated.shape[0]*len(idx_t)) + ' images are created')
 print('========================================================')
 print('flip 20% of images')
 # flip
-for i in range(0,idx_f):
+for i in idx_f:
     sample2flip = sample_array[i,0,:,:]
     label2flip = label_array[i,0,:,:]
     sample_fliped = cv2.flip(sample2flip,0)
@@ -111,7 +111,7 @@ for i in range(0,idx_f):
 print(str(label_fliped.shape[0]*len(idx_f)) + ' images are created')
 
     
-np.save(data_path+'/augmentation/sample.npy',sample_array)
-np.save(data_path+'/augmentation/label.npy',label_array)
+np.save('../train_data/aug/sample.npy',sample_array)
+np.save('../train_data/aug/label.npy',label_array)
     
     

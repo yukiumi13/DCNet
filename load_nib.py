@@ -57,10 +57,10 @@ def resize(img, size):
     return img
 
 def main(Args):
-    inputfolder = '../test_data'
-    outputfolder = '../test_data/testset'
-    labelFolder = 'Label'
-    sampleFolder = 'Sample'
+    inputfolder = '../SrcData'
+    outputfolder = '../train_data/IMG'
+    labelFolder = 'label'
+    sampleFolder = 'sample'
     if os.path.exists(inputfolder +'/'+sampleFolder+'/'+'.DS_Store'):
         os.remove(inputfolder +'/'+sampleFolder+'/'+'.DS_Store')
     try:
