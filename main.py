@@ -37,7 +37,7 @@ def train(data):
     torch.backends.cudnn.enabled = True
     torch.backends.cudnn.benchmark = True
     # 启用cuDNN库并自主选择convolution算法
-    optimizer = torch.optim.SGD(ssm.parameters(), lr=0.002, beta=[0.9,0.999], weight_decay=0.0001, )
+    optimizer = torch.optim.SGD(ssm.parameters(), lr=0.0001, weight_decay=0.0001, )
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, [25, 30], 0.1)
     # lrdecay管理器
     min_loss = 10
