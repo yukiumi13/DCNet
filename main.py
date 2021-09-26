@@ -88,10 +88,11 @@ def train(data):
                     img_c = img_1.unsqueeze(0)
                     writer.add_image('train/outputs/pred'+str(j)+'/level'+str(lv),img_c)
                     img_2 = trans(img_1)
-                    plt.subplot(yp_img.shape[0],7,lv+1+j*7)
+                    plt.subplot(yp_img.shape[0],7,lv+1+i*7)
                     plt.imshow(img_2, cmap='gray')
                     plt.axis('off')
                     plt.title('S'+str(lv))
+                    plt.show()
                 gt_img = ys.clone().cpu()
                 gt_img = gt_img[j,:,:]
                 gt_img_c = gt_img.unsqueeze(0)
@@ -103,18 +104,6 @@ def train(data):
                 plt.axis('off')
                 plt.title('G')
                 plt.show()
-                plt.savefig('Out.svg')
-
-            '''
-            if dice > 0.8:
-                plt.savefig('results/'+str(dice)+'.svg')
-            '''
-            if dice > min_dice:
-                plt.savefig('Best.svg')
-                min_dice = dice
-                print('min_dice',min_dice)
-            
-
              
             if cross_entropy < min_loss:
                     min_loss = cross_entropy
