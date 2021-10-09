@@ -31,7 +31,7 @@ def train(data):
     # ssm = single_salicency_model(drop_rate=0.2, layers=12)
     # ssm = single_salicency_model_c(drop_rate=0.2, layers=12)
     trans = torchvision.transforms.ToPILImage()
-    ssm = single_salicency_model_b(drop_rate=0.2, layers=12)
+    ssm = single_salicency_model_g(drop_rate=0.2, layers=12)
     ssm = torch.nn.DataParallel(ssm, device_ids=[0, 1])
     ssm.cuda()
     # ssm.load_state_dict(torch.load('ssm_e.pth'))
@@ -80,7 +80,7 @@ def train(data):
     # lrdecay管理器
     min_dice = 0.8
     min_dice_val = 0
-    writer = tb.SummaryWriter('./events_ssm_f')
+    writer = tb.SummaryWriter('./events_ssm_g')
     train_idx = 0 
     for epoch in range(300):
         for i, (imagedata, labeldata) in enumerate(data):
@@ -176,7 +176,7 @@ def train(data):
 
             print('epoch=', epoch, "sampleNo.=", i, 'cross_entropy=', cross_entropy, 'dice=', dice)
         
-        val_data1 = ImageDataset('../testset/sample.npy', '../testset/label.npy')
+        val_data1 = ImageDataset('../valset/sample.npy', '../valtest/label.npy')
         val_data = DataLoader(val_data1, batch_size=1, shuffle=True, pin_memory=False)
         dice_val_sum = 0
         sen_val_sum = 0
@@ -225,7 +225,7 @@ def train(data):
             plt.imshow(gt_img_2, cmap='gray')
             plt.axis('off')
             plt.title('ground truth')
-            plt.savefig('testresults/test'+str(i)+'.jpg')
+            plt.savefig('valresults/test'+str(i)+'.jpg')
         dice_val = dice_val_sum/17
         sen_val = sen_val_sum/17
         spe_val = spe_val_sum/17

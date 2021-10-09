@@ -692,6 +692,139 @@ class single_salicency_model_f(nn.Module):
         logits = self.convlast2(logits)
         yp = torch.sigmoid(logits)
         return yp, logits_scale_64_4_upsampled_to_256_sigmoid, logits_scale_64_3_upsampled_to_256_sigmoid, logits_scale_64_2_upsampled_to_256_sigmoid, logits_scale_64_1_upsampled_to_256_sigmoid, logits_scale_128_upsampled_to_256_sigmoid, logits_scale_256_upsampled_to_256_sigmoid
+class single_salicency_model_g(nn.Module):
+    def __init__(self, drop_rate, layers):
+        super(single_salicency_model, self).__init__()
+        self.drop_rate = drop_rate
+        self.layers = layers
+        self.conv2d = conv2d(in_features=3, out_features=16, kernel_size=3)
+        #block1 256*256 d=1
+        self.block1 = blocknd(layers=12, dilated_rate=1, drop_rate=self.drop_rate)
+        self.conv2d1 = conv2d(in_features=160, out_features=16, kernel_size=3)
+        self.bac1 = batch_activ_conv1(in_features=28, out_features=14, kernel_size=1, dilated_rate=1, drop_rate=self.drop_rate)
+        self.avg1 = avg_pool(s=2)
+        #block2 128*128 d=1
+        self.block2 = blocknd(layers=12, dilated_rate=1, drop_rate=self.drop_rate)
+        self.conv2d2 = conv2d(in_features=26, out_features=16, kernel_size=3)
+        self.bac2 = batch_activ_conv1(in_features=26, out_features=13, kernel_size=1, dilated_rate=1, drop_rate=self.drop_rate)
+        self.avg2 = avg_pool(s=2)
+        # block3 64X64 d = 2
+        self.block3 = blocknd(layers=12, dilated_rate=2, drop_rate=self.drop_rate)
+        self.conv2d3 = conv2d(in_features=25, out_features=16, kernel_size=3)
+        self.bac3 = batch_activ_conv1(in_features=25, out_features=13, kernel_size=1, dilated_rate=1, drop_rate=self.drop_rate)
+        # block4 64X64 d = 4
+        self.block4 = block(layers=12, dilated_rate=4, drop_rate=self.drop_rate)
+        self.conv2d4 = conv2d(in_features=25, out_features=16, kernel_size=3)
+        self.bac4 = batch_activ_conv1(in_features=25, out_features=13, kernel_size=1, dilated_rate=1, drop_rate=self.drop_rate)
+        # block5 64X64 d = 8
+        self.block5 = block(layers=12, dilated_rate=8, drop_rate=self.drop_rate)
+        self.conv2d5 = conv2d(in_features=25, out_features=16, kernel_size=3)
+        #logits_scale_64_3
+        self.ppm64 = pyramid_pooling_64(features_channel=16, pyramid_feature_channels=1)
+        self.batchnorm64_3 = batchnorm(eps=1e-05)
+        self.relu64_3 = torch.nn.ReLU(inplace=False)
+        self.conv2d64_3 = conv2d(in_features=20, out_features=1, kernel_size=3)
+        #logits_scale_64_2
+        self.batchnorm64_2 = batchnorm(eps=1e-05)
+        self.relu64_2 = torch.nn.ReLU(inplace=False)
+        self.conv2d64_2 = conv2d(in_features=36, out_features=1, kernel_size=3)
+        #logits_scale_64_1
+        self.batchnorm64_1 = batchnorm(eps=1e-05)
+        self.relu64_1 = torch.nn.ReLU(inplace=False)
+        self.conv2d64_1 = conv2d(in_features=52, out_features=1, kernel_size=3)
+        #upsample to 128
+        self.upsample128 = upsample(factor=2, channel=52)
+        self.batchnorm128 = batchnorm(eps=1e-05)
+        self.relu128 = torch.nn.ReLU(inplace=False)
+        self.conv2d128 = conv2d(in_features=68, out_features=1, kernel_size=3)
+        #upsample to 256
+        self.upsample256 = upsample(factor=2, channel=68)
+        self.batchnorm256 = batchnorm(eps=1e-05)
+        self.relu256 = torch.nn.ReLU(inplace=False)
+        self.conv2d256 = conv2d(in_features=84, out_features=1, kernel_size=3)
+        self.upsample1 = upsample(factor=2, channel=1)
+        self.upsample = upsample(factor=4, channel=1)
+        #logsit后的卷积
+        self.convlast = conv2d(in_features=5, out_features=1, kernel_size=3)
+        self.convlast2 = torch.nn.Conv2d(in_channels=1, out_channels=1, kernel_size=[3, 3], stride=[1, 1], padding=1)
+
+    def forward(self, xs):
+      
+        input = xs.float()
+        
+        current = self.conv2d(input)
+        #block1 256*256 d=1
+        current, features = self.block1(current, 16, 12)
+        scale_256 = self.conv2d1(current)
+        current = self.bac1(current)
+        current = self.avg1(current)
+        # block2 128X128 d=1
+        current, features = self.block2(current, 80, 12)
+        scale_128 = self.conv2d2(current)
+        current = self.bac2(current)
+        current = self.avg2(current)
+        # block3 64X64 d = 2
+        current, features = self.block3(current, 112, 12)
+        scale_64_1 = self.conv2d3(current)
+        current = self.bac3(current)
+        # block4 64X64 d = 4
+        current, features = self.block4(current, 128, 12)
+        scale_64_2 = self.conv2d4(current)
+        current = self.bac4(current)
+        # block5 64X64 d = 8
+        current, features = self.block5(current, 136, 12)
+        scale_64_3 = self.conv2d5(current)
+        # 64_3 Map
+        ppm_64_3, ppm_channels_64_3 = self.ppm64(scale_64_3)
+        concat_64_3 = torch.cat([scale_64_3, ppm_64_3], 1)
+        current_64_3 = self.batchnorm64_3(concat_64_3)
+        current_64_3 = self.relu64_3(current_64_3)
+        logits_scale_64_3 = self.conv2d64_3(current_64_3)
+        # 64_2 Map
+        concat_64_2 = torch.cat([scale_64_2, concat_64_3], 1)
+        current_64_2 = self.batchnorm64_2(concat_64_2)
+        current_64_2 = self.relu64_2(current_64_2)
+        logits_scale_64_2 = self.conv2d64_2(current_64_2)
+        # 64_1 Map
+        concat_64_1 = torch.cat([scale_64_1, concat_64_2], 1)
+        current_64_1 = self.batchnorm64_1(concat_64_1)
+        current_64_1 = self.relu64_1(current_64_1)
+        logits_scale_64_1 = self.conv2d64_1(current_64_1)
+        # recovery 128
+        concat_scale_64_upsamped = self.upsample128(concat_64_1)
+        logits_scale_128_concat = torch.cat((scale_128, concat_scale_64_upsamped), 1)
+        logits_scale_current_128 = self.batchnorm128(logits_scale_128_concat)
+        logits_scale_current_128 = self.relu128(logits_scale_current_128)
+        logits_scale_128 = self.conv2d128(logits_scale_current_128)
+        # recovery 256
+        logits_scale_128_upsamped = self.upsample256(logits_scale_128_concat)
+        logits_scale_256_concat = torch.cat((scale_256, logits_scale_128_upsamped), 1)  # 按照通道堆叠起来
+        logits_scale_current_256 = self.batchnorm256(logits_scale_256_concat)
+        logits_scale_current_256 = self.relu256(logits_scale_current_256)
+        logits_scale_256 = self.conv2d256(logits_scale_current_256)
+
+        logits_scale_64_3_upsampled_to_256 = self.upsample(logits_scale_64_3)
+        logits_scale_64_2_upsampled_to_256 = self.upsample(logits_scale_64_2)
+        logits_scale_64_1_upsampled_to_256 = self.upsample(logits_scale_64_1)
+        logits_scale_128_upsampled_to_256 = self.upsample1(logits_scale_128)
+
+        logits_scale_64_3_upsampled_to_256_sigmoid = torch.sigmoid(logits_scale_64_3_upsampled_to_256)
+        logits_scale_64_2_upsampled_to_256_sigmoid = torch.sigmoid(logits_scale_64_2_upsampled_to_256)
+        logits_scale_64_1_upsampled_to_256_sigmoid = torch.sigmoid(logits_scale_64_1_upsampled_to_256)
+        logits_scale_128_upsampled_to_256_sigmoid = torch.sigmoid(logits_scale_128_upsampled_to_256)
+        logits_scale_256_upsampled_to_256_sigmoid = torch.sigmoid(logits_scale_256)
+
+        logits_concat = torch.cat((logits_scale_64_3_upsampled_to_256,
+                                   logits_scale_64_2_upsampled_to_256,
+                                   logits_scale_64_1_upsampled_to_256,
+                                   logits_scale_128_upsampled_to_256,
+                                   logits_scale_256
+                                   ), 1)
+
+        logits = self.convlast(logits_concat)
+        logits = self.convlast2(logits)
+        yp = torch.sigmoid(logits)
+        return yp, logits_scale_64_3_upsampled_to_256_sigmoid, logits_scale_64_2_upsampled_to_256_sigmoid, logits_scale_64_1_upsampled_to_256_sigmoid, logits_scale_128_upsampled_to_256_sigmoid, logits_scale_256_upsampled_to_256_sigmoid
 class conv2d(nn.Module):
     def __init__(self, in_features, out_features, kernel_size):
         super(conv2d, self).__init__()
@@ -769,6 +902,21 @@ class block(nn.Module):
             features += growth
         return current, features
 
+class blocknd(nn.Module):
+    def __init__(self, layers, dilated_rate, drop_rate):
+        super(block, self).__init__()
+        self.layers = layers
+        self.dilated_rate = dilated_rate
+        self.drop_rate = drop_rate
+
+    def forward(self, current, features, growth):
+        for idx in range(self.layers):
+            bac = batch_activ_conv(features, growth, 3, self.dilated_rate, self.drop_rate).cuda()
+            tmp = bac(current)
+            tmp = torch.nn.functional.pad(tmp, pad=[0, 2 * self.dilated_rate - 1, 0, 2 * self.dilated_rate - 1], mode='constant', value=0)
+            current = tmp  # 按照通道堆叠起来
+
+        return current, features
 
 
 class avg_pool(nn.Module):
