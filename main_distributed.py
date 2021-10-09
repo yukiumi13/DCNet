@@ -31,7 +31,11 @@ def train(data):
     # ssm = single_salicency_model(drop_rate=0.2, layers=12)
     # ssm = single_salicency_model_c(drop_rate=0.2, layers=12)
     trans = torchvision.transforms.ToPILImage()
+<<<<<<< HEAD
     ssm = single_salicency_model_g(drop_rate=0.2, layers=12)
+=======
+    ssm = single_salicency_model_b(drop_rate=0.2, layers=12)
+>>>>>>> 012c69bac34a6d42248e13867812b6db37a7b204
     ssm = torch.nn.DataParallel(ssm, device_ids=[0, 1])
     ssm.cuda()
     # ssm.load_state_dict(torch.load('ssm_e.pth'))
@@ -80,7 +84,11 @@ def train(data):
     # lrdecay管理器
     min_dice = 0.8
     min_dice_val = 0
+<<<<<<< HEAD
     writer = tb.SummaryWriter('./events_ssm_g')
+=======
+    writer = tb.SummaryWriter('./events_ssm_f')
+>>>>>>> 012c69bac34a6d42248e13867812b6db37a7b204
     train_idx = 0 
     for epoch in range(300):
         for i, (imagedata, labeldata) in enumerate(data):

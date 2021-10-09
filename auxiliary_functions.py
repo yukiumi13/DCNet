@@ -418,7 +418,6 @@ class single_salicency_model_c(nn.Module):
                                    logits_scale_128_upsampled_to_256,
                                    logits_scale_256
                                    ), 1)
-
         logits = self.convlast(logits_concat)
         logits = self.convlast2(logits)
         yp = torch.sigmoid(logits)
